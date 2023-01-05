@@ -1,0 +1,22 @@
+            <h3>Usuario</h3>
+        <div>
+            <form action="/signup" method="POST">
+                <div>
+                    <input type="email" name="mail" class="form-control" placeholder="Email">
+                </div>
+                <div>
+                    <input type="password" name="password" class="form-control" placeholder="Contraseña">
+                </div>
+                <div>
+                    <select name="type_user" onchange="select()" id="usuario">
+                        <option selected="selected">Seleccione un Usuario</option>
+                        <option>Empleado</option>
+                        <option>Empresa</option>
+                    </select>
+                </div>
+                <div>
+                    <button class="forma" type="submit">
+                        Guardar
+                    </button>
+                </div>
+            </form>
