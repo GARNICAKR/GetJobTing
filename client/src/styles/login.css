@@ -1,0 +1,96 @@
+*{
+    padding: 20px 100px;
+    margin: auto;
+    box-sizing: border-box;
+}
+.error{
+    color: red;
+    font-size: 10px;
+    margin-left: 2px
+}
+.login .input label{
+    font-size: 18px;
+    font-weight:bold;
+    color: rgba(0, 0, 0, 0.565);
+}
+
+.login .icono{
+    color: red;
+    font-size: 10px;
+    margin-left: 15px;
+}
+
+.login .alinear{
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin-top: 5px
+}
+.login .btn{
+    background-color: #02735E !important;
+    border: #02735E !important;
+}
+.login .active{
+    background-color: #01463a !important;
+    border: #01463a !important;
+}
+
+.login .alert{
+    padding: 3px !important;
+}
+
+.login .input{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items:flex-start;
+    margin-bottom: 15px;
+}
+
+.login .btn-center{
+    position: relative;
+    display: flex;
+    justify-content: center !important;
+}
+
+.login .form{
+    position: relative;
+    display: inline-block;
+    max-width: 500px;
+    min-width: 400px;
+    align-items: center;
+    justify-content: center;
+    padding: 15px 30px;
+    border-radius: 5%;
+    margin: auto;
+    background-color: #01404075;
+}
+.login .blurfoto{
+    position: relative;
+    display: block;
+    margin: auto;
+    max-width: calc(500px + 40px);
+    max-height: calc(500px + 40px);
+    padding: 20px;
+    margin-bottom: 2vh;
+    overflow: hidden;
+}
+
+.login .blurfoto img{
+    max-width: 300px;
+    max-height: 300px;
+}
+
+.login .blurfoto img:hover{
+    transform:scale(1.3);
+    transition: all 1s;
+}
+
+.login{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 2vh;
+}
+

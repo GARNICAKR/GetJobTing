@@ -1,0 +1,29 @@
+.Register ul li .text{
+    display: block;
+    color: #02735E;
+    text-decoration: none;
+    text-align: center;
+    font-size: 30px;
+    font-weight: 300;
+    font-style: normal;
+    padding: 10px 20px;
+}
+
+.Register ul{
+    position: relative;
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.Register li{
+    display: block;
+    width: 200px;
+    background-color: #014040;
+}
+
+.Register ul li .active {
+    color: #03A678 !important;
+    background-color: rgba(0, 0, 0, 0.15);
+    border-bottom: 2px #F27405 solid;
+}
