@@ -1,2 +1,3 @@
 #modulos
 node_modules
+.env

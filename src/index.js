@@ -5,6 +5,7 @@ const methodOverride=require('method-override');
 const session=require('express-session');
 const passport =require('passport');
 const flash=require('connect-flash');
+const cors=require('cors');
 //Paquetes a Instalar
 // npm i express express-handlebars express-session method-override moongose nodemon bcryptjs passport passport-local connect-flash
 //#region Initializations
@@ -40,19 +41,20 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
+app.use(cors());
 //#endregion
 //#region Global Variables
 app.use((req,res,next)=>{
     res.locals.success_msg =req.flash('success_msg');
     res.locals.error_msg =req.flash('error_msg');
     res.locals.error =req.flash('error');
-    res.locals.user=req.user||null;
+    res.locals.onUser=req.user||null;
     next();
 });
 //#endregion
 
 //#region Routes
-app.use(require('./routes/index'));
+app.use(require('./routes/user'));
 app.use(require('./routes/userEmployee'));
 //#endregion
 

@@ -3,14 +3,15 @@
  const {isAuthenticated}=require('../helpers/auth');
  const Controller=require('../controllers/user');
  
- router.get("/",Controller.index);
+router.get("/",Controller.index);
  router.route('/signup')
-    .get(Controller.formulario)
+    .get(Controller.Fcreate)
     .post(Controller.create);
 router.route('/signin')
     .get(Controller.iniciarSesion)
     .post(Controller.verify);
+/*
 router.route('/user/:id')
- .put(Controller.update)
- .delete(Controller.delete);
+ .put(Controller.editUser)
+ .delete(Controller.delete);*/
  module.exports=router

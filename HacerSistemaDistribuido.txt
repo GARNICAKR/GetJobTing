@@ -1,0 +1,10 @@
+Almacenamiento destribuido
+Cluster
+Base de datos Distribuidas,tolerante a particiones(que la base de datos permita ser devidida sin problema)
+Un app puede tener varias bases de datos para hacerlo resistente a fallos se hacen copias de seguridad en las otras bases de datos
+pero hay el problema que el un campo guardado este en constante cambio 
+
+*/"Hadoop MapReduce" "Spark" "kafka"/*
+
+Mensajeria
+*/apache kafka/*

@@ -1,31 +1,26 @@
 const User=require("../models/Users");
 const passport=require('passport');
+const {userValidation}=require('../helpers/validations');
+
 module.exports={
-    index:async(req,res)=>{
-        const Users=await User.find();
-        //console.log(user);
-        res.render("mostrar",{Users});
-    },
-    formulario:(req,res)=>{
+    
+    Fcreate:(req,res)=>{
         res.render("users/signup");
     },
     create:async (req,res)=>{
         const {mail,password,type_user}=req.body;
-        const newUser=new User({mail,password,type_user});
-        newUser.password=await newUser.encryptPassword(password);
-     await newUser.save();
-     req.flash('success_msg','Se ha Registrado Correctamente')
-      res.redirect('/signin')
-    },
-    edit:async(req,res)=>{
-        const user=User.findById(req.params.id);
-        res.json(user);
-    },
-    update:async(req,res)=>{
-       const {mail,password,type_user}=req.body;
-        req.flash('success_msg', 'Editado Correctamente');
-        await User.findByIdAndUpdate(req.params.id, {mail,password,type_user});
-        res.redirect('/');
+        let validacion=await userValidation(mail,password,type_user);
+        if(validacion!=true){
+        req.flash('error_msg',validacion);
+        res.render("users/signup",{mail,password});
+       }else{
+            const newUser=new User({mail,password,type_user});
+            newUser.password=await newUser.encryptPassword(password);
+            await newUser.save();
+            req.flash('success_msg','Se ha Registrado Correctamente');
+             res.redirect('/signin');
+          }
+        
     },
     delete:async (req,res)=>{
         req.flash('success_msg', 'Signo Eliminado Correctamente');
