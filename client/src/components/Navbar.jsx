@@ -1,40 +1,56 @@
 import React from 'react'
-import { NavLink } from 'react-router-dom'
-import '../styles/components.css';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faUser} from '@fortawesome/free-solid-svg-icons'
+import { NavLink, Link} from 'react-router-dom'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUser } from '@fortawesome/free-solid-svg-icons'
+import { faRightToBracket, faBuilding, faBriefcase} from '@fortawesome/free-solid-svg-icons'
 import img from '../public/logotipo.png';
+import '../styles/components.css';
 
-function Navbar({user=false, register=false, login=false, home=false}) {
+function Navbar({ user = false, home = false, registrate=false}) {
   return (
     <>
-    <div className='Navbar'>
-      <a href="http://127.0.0.1:5173/">
-        <div className='inicio'>
-            <img className='img' src={img}/>
+      <div className='Navbar'>
+        <Link to="/">
+          <div className='inicio'>
+            <img className='img' src={img} />
             <label>GetJobTing</label>
-        </div>
-      </a>
-      <div className='content'>
-        <ul>
+          </div>
+        </Link>
+        <div className='content'>
+          <ul>
             <li className={home ? '' : 'none'}>
-                <NavLink className={({isActive}) => (isActive ? 'active text' : 'text')} to='/'>Home</NavLink>
+              <NavLink className={({ isActive }) => (isActive ? 'active text' : 'text')} to='/'>Home</NavLink>
             </li>
-            <li className={login ? '' : 'none'}>
-                <NavLink className={({isActive}) => (isActive ? 'active text' : 'text')} to='/login'>Login</NavLink>
-            </li>
-            <li className={register ? '' : 'none'}>
-                <NavLink className={({isActive}) => (isActive ? 'active text' : 'text')} to='/Register'>Register</NavLink>
-            </li>
-        </ul>
-      </div>
-      <div className={(user ? 'sesion' : 'none sesion') }>
-        <span>Miguel13</span>
-        <div className='circle'>
-          <FontAwesomeIcon className='icono' icon={faUser} />
+          </ul>
+        </div>
+        <div className={(user ? 'sesion' : 'none sesion')}>
+          <span>Miguel13</span>
+          <div className='circle'>
+            <FontAwesomeIcon className='icono' icon={faUser} />
+          </div>
+        </div>
+        <div className={(registrate ? 'registrate' : 'none registrate')}>
+          
+          <div className='empleado'>
+              <Link to='/resgitarEmpleado'>
+              <FontAwesomeIcon className='icono' icon={faBriefcase}/>
+                <label>Empleado</label>
+              </Link>
+          </div>
+          <div className='empleado'>
+          <Link to='/resgitarEmpresa'>
+          <FontAwesomeIcon className='icono' icon={faBuilding}/>
+                <label>Empresa</label>
+              </Link>
+          </div>
+          <div className='empleado'>
+              <Link  to='/login'>
+                <FontAwesomeIcon className='icono' icon={faRightToBracket}/>
+                <label>Ingresar</label>
+              </Link>
+          </div>
         </div>
       </div>
-    </div>
     </>
   )
 }

@@ -13,7 +13,7 @@ function Login() {
   const [boton,setBoton] = useState(false);
   return (
     <>
-    <Navbar user={false} register={true} login={true} />
+    <Navbar registrate={true} />
     <div className='login'>
       <div className='blurfoto'>
         <img src={img} />
