@@ -4,6 +4,9 @@
     box-sizing: border-box;
 }
 
+.dashed{
+    border: 1px solid red;
+}
 
 
 /* Color Theme Swatches in Hex
