@@ -10,7 +10,7 @@ Validations.emptydatas=(body)=>{
    return band;
 }
 Validations.userValidation=async(mail,password,type_user)=>{
-    let band=true;
+    let band=false;
     const dataValid=[mail,password];
     if(type_user=="Seleccione un Usuario"){
         band="Selecione un tipo de Cuenta";

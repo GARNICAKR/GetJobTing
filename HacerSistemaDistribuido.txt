@@ -7,4 +7,24 @@ pero hay el problema que el un campo guardado este en constante cambio
 */"Hadoop MapReduce" "Spark" "kafka"/*
 
 Mensajeria
-*/apache kafka/*
+RabbitMQ y Nginx para el enrutamiento
+
+/*Busqueda Avanzada*/
+Si quieres hacer una búsqueda más avanzada en tu página web, 
+una opción es usar una biblioteca de búsqueda full-text como Elasticsearch o Solr. 
+
+
+
+*Diseñar y desarrollar tu aplicación web utilizando un marco de trabajo web como Express (para Node.js) o Django (para Python)X
+
+*Utilizar un sistema de control de versiones para el código de tu aplicación, como Git, para controlar y compartir los cambios.X
+
+*Utilizar un sistema de contenedores, como Docker, para empaquetar tu aplicación y sus dependencias en un ambiente consistente y fácil de distribuir.X
+
+*Utilizar una plataforma de nube, como AWS, Google Cloud o Azure, para implementar y escalar tu aplicación. Estas plataformas te permiten desplegar tus contenedores en varios servidores y ajustar automáticamente la capacidad según la demanda.
+
+*Utilizar un sistema de balanceo de carga, como HAProxy o Nginx, para distribuir las solicitudes entrantes a través de varios servidores.
+
+*Utilizar un sistema de almacenamiento distribuido, como MongoDB o Cassandra, para almacenar tus datos en varios servidores.
+
+*Monitorear y mantener tu aplicación distribuida para detectar y corregir problemas y asegurar la disponibilidad y rendimiento adecuado.

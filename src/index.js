@@ -6,6 +6,7 @@ const session=require('express-session');
 const passport =require('passport');
 const flash=require('connect-flash');
 const cors=require('cors');
+const { Consume } = require("./helpers/rabbitMQ");
 //Paquetes a Instalar
 // npm i express express-handlebars express-session method-override moongose nodemon bcryptjs passport passport-local connect-flash
 //#region Initializations
@@ -55,7 +56,11 @@ app.use((req,res,next)=>{
 
 //#region Routes
 app.use(require('./routes/user'));
-app.use(require('./routes/userEmployee'));
+app.use("/Employee",require('./routes/userEmployee'));
+app.use("/Company",require("./routes/userCompany"));
+app.use("/Jobs",require("./routes/jobs"));
+app.use("/postulaciones",require("./routes/Aplicants"));
+app.use(require('./routes/rabbitMQ'));
 //#endregion
 
 
@@ -67,3 +72,29 @@ app.listen(app.get('port'),()=>{
     console.log('Server on port ',app.get('port'));
 });
 //#endregion
+async function pruebaRabbitMq(wait){
+    console.log("esta en Index");
+    setTimeout(async() => {
+        Consume().then((result)=>{
+            console.log("result",result);
+        })
+    // try {
+    //     Consume().then(()=>{
+            
+    //         setTimeout(() => {
+    //             if(wait<4){
+    //                 console.log("Entro en el wait")
+    //                 pruebaRabbitMq(wait+1);
+    //             }
+                    
+    //           },wait*5000);
+    //     }
+    //     )
+        
+    // } catch (error) {
+    //     console.log(error);
+    // }
+        //pruebaRabbitMq();
+      }, 5000);
+}
+pruebaRabbitMq(1);

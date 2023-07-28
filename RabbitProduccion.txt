@@ -1,0 +1,8 @@
+
+Cuando pasas a un entorno de producción, donde tus servidores no tendrán RabbitMQ ejecutándose localmente, hay algunas opciones para conectar tus servidores con RabbitMQ:
+
+Configurar RabbitMQ en un servidor dedicado: Puedes configurar un servidor dedicado para ejecutar RabbitMQ en tu entorno de producción. Este servidor será responsable de manejar las colas y los mensajes. Tus servidores de aplicación se conectarán a este servidor de RabbitMQ utilizando la dirección IP o el nombre de host del servidor.
+
+Utilizar un servicio administrado de RabbitMQ en la nube: En lugar de administrar tu propia instancia de RabbitMQ, puedes utilizar un servicio administrado de RabbitMQ en la nube. Hay proveedores de servicios en la nube que ofrecen RabbitMQ como servicio, lo que simplifica la configuración y la administración. Solo necesitarás proporcionar la información de conexión y las credenciales en tus servidores de aplicación.
+
+Utilizar un servicio de enrutamiento de mensajes: También puedes considerar utilizar un servicio de enrutamiento de mensajes, como RabbitMQ as a Service, que te permite externalizar la infraestructura de RabbitMQ y conectar tus servidores a través de API o protocolos de mensajería. Estos servicios proporcionan una capa de abstracción para manejar la comunicación con RabbitMQ y escalan automáticamente según sea necesario.

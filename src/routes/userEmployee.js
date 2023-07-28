@@ -6,11 +6,15 @@ const Controller=require('../controllers/userEmployee');
 const UserEmployee=require("../models/UsersEmployee");
 const {Upload,isAuthenticated}=require('../helpers/auth');
 const upload=Upload();
-
-router.route("/archivos")
-  .post(upload.single("avatar"),Controller.archivo)
-  .get(Controller.formulario);
-   
-router.get('/mostrar',Controller.mostrar);
-
+const MultiUpload =upload.fields([
+  {name:"photo",maxCount:1},
+  {name:"CV",maxCount:1}
+])
+router.route("")
+  .post(MultiUpload,Controller.Create)
+  .get(Controller.Fcreate);
+router.route("/edit/:id")
+  .get(Controller.Fedit)
+  .put(Controller.Edit)
+router.get('/postulaciones/:id',Controller.showPostulations);
 module.exports=router;
