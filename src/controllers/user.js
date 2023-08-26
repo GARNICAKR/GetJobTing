@@ -1,8 +1,11 @@
 const User = require("../models/Users");
+const UserCompany = require("../models/userCompany");
 const passport = require("passport");
+const bcrypt= require('bcryptjs');
 const UserEmployee = require("../models/UsersEmployee");
 const { userValidation } = require("../helpers/validations");
 const { Publish } = require("../helpers/rabbitMQ");
+
 module.exports = {
   index: (req, res) => {
     res.render("home");
@@ -55,9 +58,42 @@ module.exports = {
 
     res.render("users/signin");
   },
-  verify: passport.authenticate("local", {
-    failureRedirect: "/signin",
-    successRedirect: "/",
-    failureFlash: true,
-  }),
+  Logearse: async (req,res)=>{
+    const { mail, password } = req.body;
+      const user=  await User.findOne({mail: mail});
+      let data;
+      if(!user){
+          data={
+            error:"Usuario Incorrecto"
+          }
+          res.send(data)
+      }else{
+          const match = await bcrypt.compare(password, user.password);
+            if(match){
+              if(user.type_user=="company"){
+                const userCompany = await UserCompany.findOne({ idUser: user._id }).lean();
+                userCompany.logo =userCompany.logo.buffer.toString("base64");
+                userCompany.mail=user.mail;
+                res.json({userCompany});
+              }else{
+                const userEmployee = await UserEmployee.findOne({ idUser: user._id }).lean();
+                userEmployee.photo = userEmployee.photo.toString("base64");   
+                userEmployee.CV =userEmployee.CV.buffer.toString("base64");
+                userEmployee.mail=user.mail;
+               res.json({userEmployee});
+              }
+            }else{
+              data={
+                error:"Contraseña Incorrecta"
+              }
+              res.send(data)
+            }
+        }
+
+  }
+  // verify: passport.authenticate("local", {
+  //   failureRedirect: "/signin",
+  //   successRedirect: "/",
+  //   failureFlash: true,
+  // }),
 };

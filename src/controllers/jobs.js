@@ -1,4 +1,5 @@
 const Jobs = require("../models/Jobs");
+const userCompany = require("../models/userCompany");
 const Aplicants = require("../models/Aplicants");
 const { emptydatas } = require("../helpers/validations");
 const { Publish } = require("../helpers/rabbitMQ");
@@ -19,6 +20,9 @@ module.exports = {
       requisitos,
       responsabilidades,
       vacancies,
+      country,
+      state,
+      city,
     } = req.body;
 
     const datasValid = [
@@ -33,6 +37,9 @@ module.exports = {
       requisitos,
       responsabilidades,
       vacancies,
+      country,
+      state,
+      city,
     ];
     if (!emptydatas(datasValid)) {
       req.flash("error_msg", "No deje espacios vacios");
@@ -47,19 +54,24 @@ module.exports = {
         requisitos: requisitos,
         responsabilidades: responsabilidades,
       };
-      const  headers={
-        tabla:"Jobs",
-        peticion:"New",
-        'x-match':'all'
+      const location = {
+        country: country,
+        state: state,
+        city: city,
       };
-      Publish(headers,{
+      const headers = {
+        tabla: "Jobs",
+        peticion: "New",
+        "x-match": "all",
+      };
+      Publish(headers, {
         idUserCompany,
         title,
         about_job,
         pay,
         vacancies,
+        location,
       });
-      
 
       res.send("OK");
     }
@@ -67,15 +79,14 @@ module.exports = {
   Fedit: async (req, res) => {
     let job;
     try {
-     job = await Jobs.findById(req.params.id);
-     
+      job = await Jobs.findById(req.params.id);
     } catch (error) {
       console.error(error);
     }
     res.render("jobs/fedit.hbs", { job });
   },
   edit: async (req, res) => {
-    const _id=req.params.id;
+    const _id = req.params.id;
     const {
       title,
       description,
@@ -87,6 +98,9 @@ module.exports = {
       requisitos,
       responsabilidades,
       vacancies,
+      country,
+      state,
+      city,
     } = req.body;
     const datasValid = [
       title,
@@ -99,11 +113,14 @@ module.exports = {
       requisitos,
       responsabilidades,
       vacancies,
+      country,
+      state,
+      city,
     ];
     if (!emptydatas(datasValid)) {
       res.send("ERROR");
     } else {
-      const about_job = { 
+      const about_job = {
         description: description,
         sector: sector,
         schedule: schedule,
@@ -112,50 +129,82 @@ module.exports = {
         requisitos: requisitos,
         responsabilidades: responsabilidades,
       };
-      const  headers={
-        tabla:"Jobs",
-        peticion:"Edit",
-        'x-match':'all'
+      const location = {
+        country: country,
+        state: state,
+        city: city,
       };
-      Publish(headers,{
+      const headers = {
+        tabla: "Jobs",
+        peticion: "Edit",
+        "x-match": "all",
+      };
+      Publish(headers, {
         _id,
-        job:{ 
+        job: {
           title,
           about_job,
           pay,
           vacancies,
-        }
-
+          location,
+        },
       });
-      
-      
+
       res.send("OK");
     }
   },
   delete: async (req, res) => {
-    const  headers={
-      tabla:"Jobs",
-      peticion:"Delete",
-      'x-match':'all'
+    const headers = {
+      tabla: "Jobs",
+      peticion: "Delete",
+      "x-match": "all",
     };
-    Publish(headers,{
-      _id:req.params.id
+    Publish(headers, {
+      _id: req.params.id,
     });
     const aplicants = await Aplicants.findOne({ idJobs: req.params.id });
-    const  headers1={
-      tabla:"Aplicant",
-      peticion:"Delete",
-      'x-match':'all'
+    const headers1 = {
+      tabla: "Aplicant",
+      peticion: "Delete",
+      "x-match": "all",
     };
-    let idAplicants=aplicants._id;
-    Publish(headers1,{
-      _id:idAplicants
+    let idAplicants = aplicants._id;
+    Publish(headers1, {
+      _id: idAplicants,
     });
     res.send("OK");
   },
   showJobs: async (req, res) => {
+    let idCompanies = [];
+    function checkID(_id) {
+      let band = false;
+      idCompanies.forEach((id) => {
+        if (id === _id) {
+          band = true;
+          return;
+        }
+      });
+
+      if (band == true) {
+        return band;
+      }
+      idCompanies.push(_id);
+
+      return false;
+    }
     try {
-      const jobs = await Jobs.find().lean();
+      const jobs = await Jobs.find()
+        .populate({ path: "idUserCompany", select: "nameCompany logo" })
+        .lean();
+
+      jobs.forEach((job) => {
+        if (!checkID(job.idUserCompany._id)) {
+
+          job.idUserCompany.logo =
+            job.idUserCompany.logo.buffer.toString("base64");
+        }
+      });
+
       res.json(jobs);
     } catch (error) {
       console.log(error);
@@ -169,29 +218,29 @@ module.exports = {
     );
     res.json(filterjobs);
   },
-  pruebaRabbit:async(req,res)=>{
-    const  headers={
-      tabla:"Prueba",
-      peticion:"Delete",
-      'x-match':'all'
+  pruebaRabbit: async (req, res) => {
+    const headers = {
+      tabla: "Prueba",
+      peticion: "Delete",
+      "x-match": "all",
     };
     function sendRequests(index) {
       if (index >= 6) {
         return; // Terminar si hemos alcanzado el límite
       }
-    
+
       sent(index).then((res) => {
         Publish(headers, {
-          res
+          res,
         });
-    
+
         // Programar la siguiente petición después de 8 segundos
         setTimeout(() => {
           sendRequests(index + 1);
         }, 3000);
       });
     }
-    
+
     function sent(i) {
       return new Promise(async (resolve, reject) => {
         try {
@@ -201,9 +250,9 @@ module.exports = {
         }
       });
     }
-    
+
     // Iniciar el envío progresivo de las peticiones
-    sendRequests(0)
-    res.send("OK")
-  }
+    sendRequests(0);
+    res.send("OK");
+  },
 };

@@ -9,7 +9,7 @@
 router.delete('/userDelete/:id',Controller.delete)
 router.route('/signin')
     .get(Controller.iniciarSesion)
-    .post(Controller.verify);
+    .post(Controller.Logearse);
 /*
 router.route('/user/:id')
  .put(Controller.editUser)

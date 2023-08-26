@@ -1,27 +1,14 @@
 const UserEmployee = require("../models/UsersEmployee");
 const User = require("../models/Users");
 const Jobs = require("../models/Jobs");
-const { userValidation, emptydatas } = require("../helpers/validations");
+const { userValidation, emptydatas, files } = require("../helpers/validations");
 const { Publish } = require("../helpers/rabbitMQ");
 const fs = require("fs");
 module.exports = {
   Create: async (req, res) => {
-    const {
-      mail,
-      password,
-      type_user,
-      name,
-      last_name,
-      phone_number,
-      country,
-      state,
-      city,
-      address,
-    } = req.body;
-    let validacion = await userValidation(mail, password, type_user);
-    if (validacion) {
-      req.flash("error_msg", validacion);
-      res.render("users/signup", {
+
+
+      const {
         mail,
         password,
         type_user,
@@ -31,41 +18,59 @@ module.exports = {
         country,
         state,
         city,
-        address,
-      });
-    } else {
+      } = req.body;
 
-      const datavalid = [
-        name,
-        last_name,
-        phone_number,
-        country,
-        state,
-        city,
-        address,
-      ];
-      if (!emptydatas(datavalid)) {
-        req.flash("error_msg", "No deje espacios vacios");
-        res.send("Error");
+     
+      let validacion = await userValidation(mail, password, type_user);
+      if (validacion) {
+        let data={
+          error:validacion
+        }
+        res.send(data)
       } else {
-        const location = {
-          country: country,
-          state: state,
-          city: city,
-          address: address,
-        };
-        if (req.files.photo[0].mimetype.split("/")[0] != "image") {
-          res.send("eerr");
+        const datavalid = [
+          name,
+          last_name,
+          phone_number,
+          country,
+          state,
+          city,
+
+        ];
+
+        if (!emptydatas(datavalid)) {
+          let data={
+            error:"No deje campos vacios"
+          }
+          res.send(data)
         } else {
-          if (req.files.CV[0].mimetype != "application/pdf") {
-            res.send("eerr");
+          const location = {
+            country: country,
+            state: state,
+            city: city,
+          };
+
+          let fileValidation = files(req.files.photo[0],"photo");
+          if (fileValidation) {
+            let data = {
+              error: fileValidation,
+            };
+            res.send(data);
           } else {
-            const CV = fs.readFileSync(`uploads/${req.files.CV[0].filename}`);
-            const photo = fs.readFileSync(
-              `uploads/${req.files.photo[0].filename}`
-            );
-            
-            const headers = {
+            fileValidation = files(req.files.CV[0],"pdf");
+            if (fileValidation) {
+              let data = {
+                error: fileValidation,
+              };
+              res.send(data);
+            } else {
+              const CV = fs.readFileSync(`uploads/${req.files.CV[0].filename}`);
+              const photo = fs.readFileSync(
+                `uploads/${req.files.photo[0].filename}`
+              );
+              fs.unlinkSync(`uploads/${req.files.CV[0].filename}`);
+              fs.unlinkSync(`uploads/${req.files.photo[0].filename}`);
+              const headers = {
                 tabla: "UserEmployee",
                 peticion: "New",
                 "x-match": "all",
@@ -81,16 +86,20 @@ module.exports = {
                 last_name,
                 phone_number,
                 location,
+           
                 CV,
-                photo
-                
+                photo,
               });
-            req.flash("success_msg", "Se ha Registrado Correctamente");
+                let data={
+                  ok:"ok"
+                }            
+              res.send(data);
+            }
+
           }
         }
       }
-    }
-    res.send('OK');
+   
   },
   Fcreate: (req, res) => {
     res.render("users/userEmployee");
@@ -103,15 +112,8 @@ module.exports = {
     res.json(employee);
   },
   Edit: async (req, res) => {
-    const {
-      name,
-      last_name,
-      phone_number,
-      country,
-      state,
-      city,
-      address,
-    } = req.body;
+    const { name, last_name, phone_number, country, state, city } =
+      req.body;
     const datavalid = [
       name,
       last_name,
@@ -119,7 +121,7 @@ module.exports = {
       country,
       state,
       city,
-      address,
+
     ];
     if (!emptydatas(datavalid)) {
       req.flash("error_msg", "No deje espacios vacios");
@@ -129,7 +131,7 @@ module.exports = {
         country: country,
         state: state,
         city: city,
-        address: address,
+
       };
       const headers = {
         tabla: "UserEmployee",
@@ -137,17 +139,16 @@ module.exports = {
         "x-match": "all",
       };
       Publish(headers, {
-        _id:req.params.id,
-        Employee:{
-            name,
-            last_name,
-            phone_number,
-            location,
-        }
+        _id: req.params.id,
+        Employee: {
+          name,
+          last_name,
+          phone_number,
+          location,
+        },
       });
-    res.send("OK");
+      res.send("OK");
     }
-  
   },
   showPostulations: async (req, res) => {
     const Employee = await UserEmployee.findById(req.params.id);

@@ -56,10 +56,11 @@ app.use((req,res,next)=>{
 
 //#region Routes
 app.use(require('./routes/user'));
-app.use("/Employee",require('./routes/userEmployee'));
-app.use("/Company",require("./routes/userCompany"));
-app.use("/Jobs",require("./routes/jobs"));
+app.use("/employee",require('./routes/userEmployee'));
+app.use("/company",require("./routes/userCompany"));
+app.use("/jobs",require("./routes/jobs"));
 app.use("/postulaciones",require("./routes/Aplicants"));
+app.use("/location",require("./routes/location"));
 app.use(require('./routes/rabbitMQ'));
 //#endregion
 

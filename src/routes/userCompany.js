@@ -10,9 +10,10 @@ const upload=Upload();
 router.route("/")
   .post(upload.single("logo"),Controller.Create)
   .get(Controller.Fcreate);
-  
+
 router.get('/jobs/:id',Controller.showJobs)
 router.route("/edit/:id")
   .get(Controller.Fedit)
   .put(Controller.Edit)
+  router.get("/show",Controller.showCompanies);
 module.exports=router;

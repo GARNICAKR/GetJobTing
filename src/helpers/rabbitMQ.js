@@ -20,20 +20,17 @@ RabbitMQ.Publish = (headers, message) => {
         Buffer.from(JSON.stringify(message)),
         { headers, persistent: true }
       );
-      console.log(`Sent message to "${exchangeName}" exchange`, message);
+      console.log(`Sent message to "${exchangeName}" exchange`, headers);
     } catch (error) {
       console.error(error);
       throw new Error(
-        `Fail sending message to "${exchangeName}" exchange, "${JSON.stringify(
-          message
-        )}"`
+        `Fail sending message to "${exchangeName}" exchange, "${headers}"`
       );
     }
   };
 
   const backOffMinTime1MaxTime4 = backOff(1)(4);
   const main = async (messages, wait) => {
-    console.log("Mensaje",message);
     try {
       const connection = await amqp.connect("amqps://oeqsnopo:El_ALlnSw-9GDfSr9oAZTrGp29wzuhD0@chimpanzee.rmq.cloudamqp.com/oeqsnopo");
       const channel = await connection.createChannel();
@@ -73,6 +70,10 @@ RabbitMQ.Publish = (headers, message) => {
       );
 
       sendMessageTimeout();
+      setTimeout(() => {
+        connection.close(); // Cierra la conexión después de un tiempo determinado
+        console.log("Cerro Conexion");
+      }, 6000);
     } catch (error) {
       let aux;
       if (wait) {
@@ -100,6 +101,7 @@ RabbitMQ.Publish = (headers, message) => {
     console.error(error);
     process.exit(1);
   });
+
 };
 ///Consume
 RabbitMQ.Consume = async () => {
@@ -144,8 +146,8 @@ RabbitMQ.Consume = async () => {
             switch (peticion) {
               case "New":
                 async function GuardarN() {
-                  console.log(`Received message from "${queue}" queue`);
-                  console.log(content);
+                  console.log(`Received message from "${queue}" New User`);
+            
                   const newUser = new User(content);
                   newUser.password = await newUser.encryptPassword(content.password);
                   await newUser.save();
@@ -159,8 +161,8 @@ RabbitMQ.Consume = async () => {
                 break;
               case "Edit":
                 async function GuardarE() {
-                  console.log(`Received message from "${queue}" queue`);
-                  console.log(content);
+                  console.log(`Received message from "${queue}" User Edit`);
+                 
                 }
                 try {
                   GuardarE();
@@ -170,8 +172,8 @@ RabbitMQ.Consume = async () => {
                 break;
               case "Delete":
                 async function GuardarD() {
-                  console.log(`Received message from "${queue}" queue`);
-                  console.log(content);
+                  console.log(`Received message from "${queue}" User Delete`);
+          
                   await User.findByIdAndDelete(content._id);
                 }
                 try {
@@ -190,9 +192,8 @@ RabbitMQ.Consume = async () => {
             switch (peticion) {
               case "New":
                 async function GuardarN() {
-                  console.log(`Received message from "${queue}" queue`);
-                  console.log(content);
-                  
+                  console.log(`Received message from "${queue}" UserCompany NEw`);
+   
                   const newUser = new User(content.user);
                   newUser.password = await newUser.encryptPassword(content.user.password);
                   
@@ -217,8 +218,8 @@ RabbitMQ.Consume = async () => {
                 break;
               case "Edit":
                 async function GuardarE() {
-                  console.log(`Received message from "${queue}" queue`);
-                  console.log(content);
+                  console.log(`Received message from "${queue}" UserCompany Edit`);
+                  
                   await UserCompany.findByIdAndUpdate(content._id, {
                     nameCompany:content.nameCompany,
                     description:content.description,
@@ -235,8 +236,8 @@ RabbitMQ.Consume = async () => {
                 break;
               case "Delete":
                 async function GuardarD() {
-                  console.log(`Received message from "${queue}" queue`);
-                  console.log(content);
+                  console.log(`Received message from "${queue}" UserCompany Delete`);
+              
                   await User.findByIdAndDelete(content._id);
                 }
                 try {
@@ -255,8 +256,8 @@ RabbitMQ.Consume = async () => {
             switch (peticion) {
               case "New":
                 async function GuardarN(){
-                  console.log(`Received message from "${queue}" queue`);
-                  console.log(content);
+                  console.log(`Received message from "${queue}" UserEmployee NEw`);
+                  
                   const newUser = new User(content.user);
                   newUser.password = await newUser.encryptPassword(content.user.password);
                   
@@ -267,6 +268,9 @@ RabbitMQ.Consume = async () => {
                     last_name:content.last_name,
                     phone_number:content.phone_number,
                     location:content.location,
+                    university:"",
+                    carrera:"",
+                    introduction:"",
                     CV:content.CV,
                     photo:content.photo
                     
@@ -282,8 +286,8 @@ RabbitMQ.Consume = async () => {
                 break;
               case "AddPostulation":
                 async function GuardarAd(){
-                  console.log(`Received message from "${queue}" queue`);
-                  console.log(content);
+                  console.log(`Received message from "${queue}" UserEmployee AddPostulation`);
+                  
                   await UserEmployee.findByIdAndUpdate(content.idEmployee,{$push:{postulations:content.idJob}})
                 }
                 try {
@@ -294,8 +298,8 @@ RabbitMQ.Consume = async () => {
                 break;
                 case "Edit":
                   async function GuardarE(){
-                    console.log(`Received message from "${queue}" queue`);
-                    console.log(content);
+                    console.log(`Received message from "${queue}" UserEmployee Edit`);
+                
                     await UserEmployee.findByIdAndUpdate(content._id,content.Employee);
                   }
                   try {
@@ -306,8 +310,8 @@ RabbitMQ.Consume = async () => {
                   break;
               case "Delete":
                 async function GuardarD(){
-                  console.log(`Received message from "${queue}" queue`);
-                  console.log(content);
+                  console.log(`Received message from "${queue}" UserEmployee Delete`);
+     
                 }
                 try {
                   GuardarD();
@@ -325,8 +329,7 @@ RabbitMQ.Consume = async () => {
             switch (peticion) {
               case "New":
                 async function GuardarN() {
-                  console.log(`Received message from "${queue}" queue`);
-                  console.log(content);
+
                   const newJob = new Jobs(content);
                   await newJob.save();
                   const headers2 = {
@@ -338,6 +341,7 @@ RabbitMQ.Consume = async () => {
                   RabbitMQ.Publish(headers2, {
                     idJob,
                   });
+                  console.log(`RECIBIDO Job ${newJob.title} Creado`);
                 }
                 try {
                   GuardarN();
@@ -348,9 +352,9 @@ RabbitMQ.Consume = async () => {
                 break;
               case "Edit":
                 async function GuardarE() {
-                  console.log(`Received message from "${queue}" queue`);
-                  console.log(content);
+                  
                   await Jobs.findByIdAndUpdate(content._id, content.job);
+                  console.log("RECIBIDO: Job Editado");
                 }
                 try {
                   GuardarE();
