@@ -308,6 +308,30 @@ RabbitMQ.Consume = async () => {
                     console.error(error);
                   }
                   break;
+              case "EditPhoto":
+                async function GuardarEP(){
+                  console.log(`Received message from "${queue}" UserEmployee EditPhoto`);
+                  
+                  await UserEmployee.findByIdAndUpdate(content._id,{photo:content.photo});
+                }
+                try {
+                  GuardarEP();
+                } catch (error) {
+                  console.error(error);
+                }
+                break;
+                case "EditCV":
+                  async function GuardarECV(){
+                    console.log(`Received message from "${queue}" UserEmployee EditCV`);
+                    
+                    await UserEmployee.findByIdAndUpdate(content._id,{CV:content.CV});
+                  }
+                  try {
+                    GuardarECV();
+                  } catch (error) {
+                    console.error(error);
+                  }
+                  break;
               case "Delete":
                 async function GuardarD(){
                   console.log(`Received message from "${queue}" UserEmployee Delete`);

@@ -6,8 +6,6 @@ const { Publish } = require("../helpers/rabbitMQ");
 const fs = require("fs");
 module.exports = {
   Create: async (req, res) => {
-
-
       const {
         mail,
         password,
@@ -112,7 +110,8 @@ module.exports = {
     res.json(employee);
   },
   Edit: async (req, res) => {
-    const { name, last_name, phone_number, country, state, city } =
+ 
+    const { name, last_name, phone_number, country, state, city,university,carrera,introduction,skills } =
       req.body;
     const datavalid = [
       name,
@@ -124,20 +123,22 @@ module.exports = {
 
     ];
     if (!emptydatas(datavalid)) {
-      req.flash("error_msg", "No deje espacios vacios");
-      res.send("Error");
+      let data = {
+        error: fileValidation,
+      };
+      res.json(data);
     } else {
       const location = {
         country: country,
         state: state,
         city: city,
-
       };
       const headers = {
         tabla: "UserEmployee",
         peticion: "Edit",
         "x-match": "all",
       };
+      let auxSkills=JSON.parse(skills)
       Publish(headers, {
         _id: req.params.id,
         Employee: {
@@ -145,9 +146,16 @@ module.exports = {
           last_name,
           phone_number,
           location,
+          university,
+          carrera,
+          introduction,
+          skills:auxSkills
         },
       });
-      res.send("OK");
+      let data = {
+        ok:"ok"
+      };
+      res.json(data);
     }
   },
   showPostulations: async (req, res) => {
@@ -163,6 +171,60 @@ module.exports = {
       postulaciones.push(job1);
     }
     res.json(postulaciones);
+  },
+  editPhoto:async(req,res)=>{
+    let fileValidation=files(req.file,"photo");
+          if(fileValidation){
+            let data={
+              error:fileValidation
+            }
+            res.send(data)
+          }else{
+            const photo = fs.readFileSync(`uploads/${req.file.filename}`);
+              fs.unlinkSync(`uploads/${req.file.filename}`);  
+              const  headers={
+                tabla:"UserEmployee",
+                peticion:"EditPhoto",
+                'x-match':'all'
+              };
+              let auxPhoto= photo.toString("base64");   
+            
+              Publish(headers,{
+                _id:req.params.id,
+                photo
+              });
+              let data = {
+                photo:auxPhoto
+              };
+              res.json(data);
+          }
+  },
+  editCV:async(req,res)=>{
+    let fileValidation=files(req.file,"pdf");
+          if(fileValidation){
+            let data={
+              error:fileValidation
+            }
+            res.send(data)
+          }else{
+            const CV = fs.readFileSync(`uploads/${req.file.filename}`);
+              fs.unlinkSync(`uploads/${req.file.filename}`);  
+              let auxCV= CV.toString("base64");   
+              const  headers={
+                tabla:"UserEmployee",
+                peticion:"EditCV",
+                'x-match':'all'
+              };
+              Publish(headers,{
+                _id:req.params.id,
+                CV
+              });
+              let data = {
+                CV:auxCV
+              };
+              res.json(data);
+          }
+
   },
   pruba: async (req, res) => {
     const userid = "63e6e7b454f40c62e23587ec";

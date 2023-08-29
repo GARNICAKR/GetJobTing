@@ -10,11 +10,14 @@ const MultiUpload =upload.fields([
   {name:"photo",maxCount:1},
   {name:"CV",maxCount:1}
 ])
+
 router.route("")
   .post(MultiUpload,Controller.Create)
   .get(Controller.Fcreate);
 router.route("/edit/:id")
   .get(Controller.Fedit)
-  .put(Controller.Edit)
+  .put(Controller.Edit);
+router.put("/editPhoto/:id",upload.single("photo"),Controller.editPhoto);
+router.put("/editCV/:id",upload.single("CV"),Controller.editCV);
 router.get('/postulaciones/:id',Controller.showPostulations);
 module.exports=router;

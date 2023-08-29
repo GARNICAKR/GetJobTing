@@ -78,7 +78,10 @@ module.exports = {
                 location,
                 logo,
               });
-            res.send("OK");
+              let data={
+                ok:"ok"
+              }     
+            res.send(data);
             } catch (error) {
               let data={
                 error:error
@@ -147,7 +150,10 @@ module.exports = {
             sat,
             location
           });
-      res.send("OK");
+          let data={
+            ok:"ok"
+          }     
+      res.send(data);
     }
    
   },
