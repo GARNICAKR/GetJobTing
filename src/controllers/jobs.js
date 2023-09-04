@@ -194,7 +194,7 @@ module.exports = {
     }
     try {
       const jobs = await Jobs.find()
-        .populate({ path: "idUserCompany", select: "nameCompany logo" })
+        .populate({ path: "idUserCompany", select: "nameCompany logo description" })
         .lean();
 
       jobs.forEach((job) => {

@@ -159,18 +159,44 @@ module.exports = {
     }
   },
   showPostulations: async (req, res) => {
+
     const Employee = await UserEmployee.findById(req.params.id);
     let postulaciones = [];
     let job;
     if (!Employee.postulations) {
-      res.send("ERROR");
+      let data = {
+        error: "No hay postulaciones",
+      };
+      res.send(data);
     }
     for (let i = 0; i < Employee.postulations.length; i++) {
       let postulation = Employee.postulations[i];
-      let job1 = await Jobs.findById(postulation);
+      let job1 = await Jobs.findById(postulation.idJob).populate({ path: "idUserCompany", select: "nameCompany logo" })
+      .lean();
+      job1.status=postulation.status;
+      job1.fecha=postulation.fecha;
+      job1.idUserCompany.logo =
+      job1.idUserCompany.logo.buffer.toString("base64");
       postulaciones.push(job1);
     }
     res.json(postulaciones);
+  },
+  deletePostulation: async (req,res)=>{
+
+    const {idEmployee,idJob}=req.body;
+    const  headers={
+      tabla:"UserEmployee",
+      peticion:"DeletePostulation",
+      'x-match':'all'
+    };
+    Publish(headers,{
+      idEmployee,
+      idJob,
+    });     
+    let data={
+      ok:"ok"
+    }
+    res.send(data);   
   },
   editPhoto:async(req,res)=>{
     let fileValidation=files(req.file,"photo");

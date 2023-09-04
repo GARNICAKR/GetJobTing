@@ -246,6 +246,18 @@ RabbitMQ.Consume = async () => {
                   console.error(error);
                 }
                 break;
+                case "AddNotifyC":
+                  async function GuardarAddN() {
+                    console.log(`Received message from "${queue}" UserCompany Add Notify`);
+                
+                    await UserCompany.findByIdAndUpdate(content._id,{$push:{notifications:content.notification}})
+                  }
+                  try {
+                    GuardarAddN();
+                  } catch (error) {
+                    console.error(error);
+                  }
+                  break;
               default:
                 console.log("Opción no válida");
                 break;
@@ -288,7 +300,7 @@ RabbitMQ.Consume = async () => {
                 async function GuardarAd(){
                   console.log(`Received message from "${queue}" UserEmployee AddPostulation`);
                   
-                  await UserEmployee.findByIdAndUpdate(content.idEmployee,{$push:{postulations:content.idJob}})
+                  await UserEmployee.findByIdAndUpdate(content.idEmployee,{$push:{postulations:content.idJobs}})
                 }
                 try {
                   GuardarAd();
@@ -296,6 +308,32 @@ RabbitMQ.Consume = async () => {
                   console.error(error);
                 }
                 break;
+                case "EditPostulation":
+                  async function GuardarEPost(){
+                    console.log(`Received message from "${queue}" UserEmployee AddPostulation`);
+                    
+                    // await UserEmployee.findByIdAndUpdate(content.idEmployee,{$push:{postulations:content.idJobs}})
+                  }
+                  try {
+                    GuardarEPost();
+                  } catch (error) {
+                    console.error(error);
+                  }
+                  break;
+                  case "DeletePostulation":
+                    async function GuardarDP(){
+                      console.log(`Received message from "${queue}" UserEmployee DeletePostulation`);
+                      
+                      await UserEmployee.findByIdAndUpdate(content.idEmployee, {
+                        $pull: { postulations: { idJob: content.idJob } }
+                      });
+                    }
+                    try {
+                      GuardarDP();
+                    } catch (error) {
+                      console.error(error);
+                    }
+                    break;
                 case "Edit":
                   async function GuardarE(){
                     console.log(`Received message from "${queue}" UserEmployee Edit`);
@@ -343,6 +381,18 @@ RabbitMQ.Consume = async () => {
                   console.error(error);
                 }
                 break;
+                case "AddNotifyE":
+                  async function GuardarAddN() {
+                    console.log(`Received message from "${queue}" UserEmployee Add Notify`);
+                
+                    await UserEmployee.findByIdAndUpdate(content._id,{$push:{notifications:content.notification}})
+                  }
+                  try {
+                    GuardarAddN();
+                  } catch (error) {
+                    console.error(error);
+                  }
+                  break;
               default:
                 console.log("Opción no válida");
                 break;
@@ -423,7 +473,7 @@ RabbitMQ.Consume = async () => {
                 async function GuardarE() {
                   console.log(`Received message from "${queue}" queue`);
                   console.log(content);
-                  await Aplicants.findByIdAndUpdate(content._id, { $push: { idsEmployee: content.idsEmployee}});
+                  await Aplicants.findByIdAndUpdate(content._id, { $push: { idsEmployee: content.idEmployee}});
                 }
                 try {
                   GuardarE();

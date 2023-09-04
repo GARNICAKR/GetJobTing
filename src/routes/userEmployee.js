@@ -19,5 +19,7 @@ router.route("/edit/:id")
   .put(Controller.Edit);
 router.put("/editPhoto/:id",upload.single("photo"),Controller.editPhoto);
 router.put("/editCV/:id",upload.single("CV"),Controller.editCV);
+router.delete('/postulaciones/delete',Controller.deletePostulation);
 router.get('/postulaciones/:id',Controller.showPostulations);
+
 module.exports=router;

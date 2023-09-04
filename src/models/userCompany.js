@@ -8,5 +8,6 @@ const UserCompanySchema = new Schema({
     sat: { type: String, required: true },
     location: { type: Object, required: true },
     logo: { type: Buffer, required: false },
+    notifications:{type:Array,required:false},
 });
 module.exports = mongoose.model('usersCompany', UserCompanySchema);

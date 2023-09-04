@@ -177,12 +177,14 @@ module.exports = {
   },
   showJobs: async (req, res) => {
     const jobs = await Jobs.find({ idUserCompany: req.params.id });
-    if (!jobs) {
+    if (jobs.length==0) {
       let data={
-        error:"Esta Vacio"
+        error:"No ha publicado ofertas"
       }
       res.send(data);
+    }else{
+      res.json(jobs);
     }
-    res.json(jobs);
+    
   },
 };

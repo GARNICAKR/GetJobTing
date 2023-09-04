@@ -6,6 +6,6 @@ const Controller=require("../controllers/applicants");
 router.route("/")
     .put(Controller.newAplicante)
     .delete(Controller.deleteAplicante);
-router.put("/status",Controller.changeStatus);
+
 router.get("/show/:id",Controller.showAplicants)
     module.exports=router
