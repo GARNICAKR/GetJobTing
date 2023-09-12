@@ -3,6 +3,7 @@ const userCompany = require("../models/userCompany");
 const Aplicants = require("../models/Aplicants");
 const { emptydatas } = require("../helpers/validations");
 const { Publish } = require("../helpers/rabbitMQ");
+const {MakeDecision}=require("../helpers/treeCART");
 module.exports = {
   Fcreate: (req, res) => {
     res.render("jobs/Fcreate");
@@ -42,8 +43,10 @@ module.exports = {
       city,
     ];
     if (!emptydatas(datasValid)) {
-      req.flash("error_msg", "No deje espacios vacios");
-      res.send("ERROR");
+      let data={
+        error:"No deje campos vacios"
+      }
+    res.send(data)
     } else {
       const about_job = {
         description: description,
@@ -73,7 +76,10 @@ module.exports = {
         location,
       });
 
-      res.send("OK");
+      let data={
+        ok:"Postulado Correctamente"
+    }
+    res.send(data);
     }
   },
   Fedit: async (req, res) => {
@@ -118,7 +124,10 @@ module.exports = {
       city,
     ];
     if (!emptydatas(datasValid)) {
-      res.send("ERROR");
+      let data={
+        error:"No deje campos vacios"
+      }
+    res.send(data)
     } else {
       const about_job = {
         description: description,
@@ -150,7 +159,10 @@ module.exports = {
         },
       });
 
-      res.send("OK");
+      let data={
+        ok:"Guardado"
+      }
+    res.send(data)
     }
   },
   delete: async (req, res) => {
@@ -175,6 +187,7 @@ module.exports = {
     res.send("OK");
   },
   showJobs: async (req, res) => {
+   MakeDecision();
     let idCompanies = [];
     function checkID(_id) {
       let band = false;

@@ -14,8 +14,8 @@ const MultiUpload =upload.fields([
 router.route("")
   .post(MultiUpload,Controller.Create)
   .get(Controller.Fcreate);
+  router.get("/show/:id",Controller.Show);
 router.route("/edit/:id")
-  .get(Controller.Fedit)
   .put(Controller.Edit);
 router.put("/editPhoto/:id",upload.single("photo"),Controller.editPhoto);
 router.put("/editCV/:id",upload.single("CV"),Controller.editCV);

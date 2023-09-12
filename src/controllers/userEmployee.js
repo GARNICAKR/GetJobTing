@@ -2,10 +2,13 @@ const UserEmployee = require("../models/UsersEmployee");
 const User = require("../models/Users");
 const Jobs = require("../models/Jobs");
 const { userValidation, emptydatas, files } = require("../helpers/validations");
+const mongoose = require('mongoose');
+
 const { Publish } = require("../helpers/rabbitMQ");
 const fs = require("fs");
 module.exports = {
   Create: async (req, res) => {
+    
       const {
         mail,
         password,
@@ -102,12 +105,35 @@ module.exports = {
   Fcreate: (req, res) => {
     res.render("users/userEmployee");
   },
-  Fedit: async (req, res) => {
-    const employee = await UserEmployee.findById(req.params.id);
-    const String64 = btoa(
-      String.fromCharCode(...new Uint8Array(employee[0].CV.buffer))
-    );
-    res.json(employee);
+  Show: async (req, res) => {
+    if (mongoose.isValidObjectId(req.params.id)) {
+      try {
+        const employee = await UserEmployee.findById(req.params.id)
+          .populate({ path: "idUser", select: "mail" })
+          .lean();
+    
+        if (employee) {
+          employee.photo = employee.photo.toString("base64");
+          employee.CV = employee.CV.buffer.toString("base64");
+          res.json(employee);
+        } else {
+          let data = {
+            error: "Usuario no Encontrado",
+          };
+          res.send(data);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    } else {
+      // req.params.id no es un ID válido de MongoDB
+      let data = {
+        error: "ID no válido ",
+      };
+      // res.status(400).json(data); // Puedes usar el código de estado 400 para indicar una solicitud incorrecta
+      res.send(data);
+    }  
+
   },
   Edit: async (req, res) => {
  
@@ -159,26 +185,27 @@ module.exports = {
     }
   },
   showPostulations: async (req, res) => {
-
+    
     const Employee = await UserEmployee.findById(req.params.id);
-    let postulaciones = [];
-    let job;
+
     if (!Employee.postulations) {
-      let data = {
-        error: "No hay postulaciones",
-      };
-      res.send(data);
+      return res.json({ error: "No hay postulaciones" });
     }
-    for (let i = 0; i < Employee.postulations.length; i++) {
-      let postulation = Employee.postulations[i];
-      let job1 = await Jobs.findById(postulation.idJob).populate({ path: "idUserCompany", select: "nameCompany logo" })
-      .lean();
-      job1.status=postulation.status;
-      job1.fecha=postulation.fecha;
-      job1.idUserCompany.logo =
-      job1.idUserCompany.logo.buffer.toString("base64");
-      postulaciones.push(job1);
-    }
+    
+    const postulationPromises = Employee.postulations.map(async (postulation) => {
+      const job1 = await Jobs.findById(postulation.idJob)
+        .populate({ path: "idUserCompany", select: "nameCompany logo" })
+        .lean();
+    
+      job1.status = postulation.status;
+      job1.fecha = postulation.fecha;
+      job1.idUserCompany.logo = job1.idUserCompany.logo.buffer.toString("base64");
+    
+      return job1;
+    });
+    
+    const postulaciones = await Promise.all(postulationPromises);
+    
     res.json(postulaciones);
   },
   deletePostulation: async (req,res)=>{
@@ -199,6 +226,7 @@ module.exports = {
     res.send(data);   
   },
   editPhoto:async(req,res)=>{
+
     let fileValidation=files(req.file,"photo");
           if(fileValidation){
             let data={

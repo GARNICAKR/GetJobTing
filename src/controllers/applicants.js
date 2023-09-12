@@ -5,7 +5,8 @@ const { Publish } = require("../helpers/rabbitMQ");
 module.exports={
     newAplicante:async(req,res)=>{
         try {
-            const {idJob,idEmployee}=req.body;
+            const {idJob,idEmployee,sendJob}=req.body;
+            console.log("Send",sendJob);
         const aplicants =await Aplicants.findOne({idJobs:idJob}).lean();
             let bandPost=false;
         if(!aplicants){
@@ -54,7 +55,8 @@ module.exports={
                         
                         Publish(headers1,{
                             idEmployee,
-                            idJobs
+                            idJobs,
+                            job:JSON.parse(sendJob)
                         });
                         const  headers2={
                             tabla:"UserCompany",

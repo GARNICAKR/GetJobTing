@@ -10,7 +10,7 @@ const upload=Upload();
 router.route("/")
   .post(upload.single("logo"),Controller.Create)
   .get(Controller.Fcreate);
-
+router.put("/editLogo/:id",upload.single("logo"),Controller.editLogo);
 router.get('/jobs/:id',Controller.showJobs)
 router.route("/edit/:id")
   .get(Controller.Fedit)

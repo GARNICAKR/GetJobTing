@@ -234,6 +234,18 @@ RabbitMQ.Consume = async () => {
                   console.error(error);
                 }
                 break;
+                case "EditLogo":
+                async function GuardarCL(){
+                  console.log(`Received message from "${queue}" UserCompany Edit Logo`);
+                  
+                  await UserCompany.findByIdAndUpdate(content._id,{logo:content.logo});
+                }
+                try {
+                  GuardarCL();
+                } catch (error) {
+                  console.error(error);
+                }
+                break;
               case "Delete":
                 async function GuardarD() {
                   console.log(`Received message from "${queue}" UserCompany Delete`);
@@ -301,6 +313,20 @@ RabbitMQ.Consume = async () => {
                   console.log(`Received message from "${queue}" UserEmployee AddPostulation`);
                   
                   await UserEmployee.findByIdAndUpdate(content.idEmployee,{$push:{postulations:content.idJobs}})
+                  await UserEmployee.findByIdAndUpdate(content.idEmployee,{$push:{intereses:content.job}})
+                
+                    
+                  
+                  
+                  
+                  // // Verificar si el array tiene más de 20 elementos
+                  // const maxIntereses = 20;
+                  // const userEmployee = await UserEmployee.findById(content.idEmployee);
+                  // if (userEmployee.intereses.length > maxIntereses) {
+                  //   await UserEmployee.findByIdAndUpdate(content.idEmployee, {
+                  //     $pop: { intereses:-1},
+                  //   });
+                  // }
                 }
                 try {
                   GuardarAd();

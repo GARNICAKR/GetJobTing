@@ -187,4 +187,33 @@ module.exports = {
     }
     
   },
+  editLogo:async(req,res)=>{
+
+    let fileValidation=files(req.file,"photo");
+          if(fileValidation){
+            let data={
+              error:fileValidation
+            }
+            res.send(data)
+          }else{
+            const logo = fs.readFileSync(`uploads/${req.file.filename}`);
+              fs.unlinkSync(`uploads/${req.file.filename}`);  
+              const  headers={
+                tabla:"UserCompany",
+                peticion:"EditLogo",
+                'x-match':'all'
+              };
+              let auxlogo= logo.toString("base64");   
+            
+              Publish(headers,{
+                _id:req.params.id,
+                logo
+              });
+              let data = {
+                logo:auxlogo
+              };
+              res.json(data);
+          }
+  },
+
 };
