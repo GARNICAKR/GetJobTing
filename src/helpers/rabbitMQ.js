@@ -334,18 +334,29 @@ RabbitMQ.Consume = async () => {
                   console.error(error);
                 }
                 break;
-                case "EditPostulation":
-                  async function GuardarEPost(){
-                    console.log(`Received message from "${queue}" UserEmployee AddPostulation`);
-                    
-                    // await UserEmployee.findByIdAndUpdate(content.idEmployee,{$push:{postulations:content.idJobs}})
-                  }
-                  try {
-                    GuardarEPost();
-                  } catch (error) {
-                    console.error(error);
-                  }
-                  break;
+                case "EditStatusE":
+                async function GuardarSE() {
+                  console.log(`Received message from "${queue}" Employee EditStatus`);
+
+                  const employee = await UserEmployee.findById(content.idEmployee);
+
+                  employee.postulations = employee.postulations.map(item => {
+                    if (item.idJob === content.idJob) {
+                      return { idJob: item.idJob, status: content.status, fecha: content.fecha};
+                    } else {
+                      return item;
+                    }
+                  });
+                  
+                   await employee.save();
+                }
+                try {
+                  GuardarSE();
+                } catch (error) {
+                  console.error(error);
+                }
+                
+                break;
                   case "DeletePostulation":
                     async function GuardarDP(){
                       console.log(`Received message from "${queue}" UserEmployee DeletePostulation`);
@@ -497,9 +508,9 @@ RabbitMQ.Consume = async () => {
                 break;
               case "Edit":
                 async function GuardarE() {
-                  console.log(`Received message from "${queue}" queue`);
-                  console.log(content);
-                  await Aplicants.findByIdAndUpdate(content._id, { $push: { idsEmployee: content.idEmployee}});
+                  console.log(`Received message from "${queue}" Aplicant Edit`);
+                  
+                  await Aplicants.findByIdAndUpdate(content._id, { $push: { idsEmployee: content.Employee}});
                 }
                 try {
                   GuardarE();
@@ -508,19 +519,21 @@ RabbitMQ.Consume = async () => {
                 }
                 
                 break;
-                case "EditStatus":
+                case "EditStatusAp":
                 async function GuardarES() {
-                  console.log(`Received message from "${queue}" queue`);
-                  console.log(content);
+                  console.log(`Received message from "${queue}" Applicant EditStatus`);
+            
+                  
                   const aplicant = await Aplicants.findOne({ idJobs:content.idJob });
 
                   aplicant.idsEmployee = aplicant.idsEmployee.map(item => {
                     if (item.idEmployee === content.idEmployee) {
-                      return { idEmployee: item.idEmployee, status: content.status};
+                      return { idEmployee: item.idEmployee, status: content.status, fecha: content.fecha};
                     } else {
                       return item;
                     }
                   });
+                
                    await aplicant.save();
                 }
                 try {

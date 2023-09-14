@@ -10,7 +10,7 @@ router.get("/oferta",Controller.showJobs);
 router.post("/search",Controller.searchJobs);
 router.get("/prueba",Controller.pruebaRabbit);
 router.route("/:id")
-    .get(Controller.Fedit)
+    .get(Controller.showJob)
     .put(Controller.edit)
     .delete(Controller.delete);
 

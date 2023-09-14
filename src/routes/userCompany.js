@@ -13,7 +13,8 @@ router.route("/")
 router.put("/editLogo/:id",upload.single("logo"),Controller.editLogo);
 router.get('/jobs/:id',Controller.showJobs)
 router.route("/edit/:id")
-  .get(Controller.Fedit)
-  .put(Controller.Edit)
+  .put(Controller.Edit);
   router.get("/show",Controller.showCompanies);
+  router.put("/changeStatus",Controller.changeStatus)
+  router.get("/:id",Controller.ShowCompany);
 module.exports=router;

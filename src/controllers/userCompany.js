@@ -1,7 +1,9 @@
 const UserCompany = require("../models/userCompany");
+
 const Jobs = require("../models/Jobs");
 const { userValidation, emptydatas,files } = require("../helpers/validations");
 const { Publish } = require("../helpers/rabbitMQ");
+const mongoose = require('mongoose');
 const fs = require("fs");
 module.exports = {
   Create: async (req, res) => {
@@ -97,12 +99,24 @@ module.exports = {
     res.render("users/userEmployee");
   },
 
-  Fedit: async (req, res) => {
-    const Company = await UserCompany.findById(req.params.id);
-    const String64 = btoa(
-      String.fromCharCode(...new Uint8Array(Company[0].CV.buffer))
-    );
-    res.json(Company);
+  ShowCompany: async (req, res) => {
+    try {
+      if (mongoose.isValidObjectId(req.params.id)) {
+        const Company = await UserCompany.findById(req.params.id).lean();
+        Company.logo =Company.logo.buffer.toString("base64");
+                   
+        res.json(Company);
+      }else{
+        let data={
+          error:"Id Invalido"
+        }
+        res.send(data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+    
+
   },
   Edit: async (req, res) => {
     const {
@@ -187,6 +201,58 @@ module.exports = {
     }
     
   },
+  changeStatus:async(req,res)=>{
+    try {
+    const {idJob,idEmployee,status}=req.body;
+    console.log(idJob,idEmployee,status);
+
+    const currentDate = new Date();
+    const formattedDate = currentDate.toISOString();
+    const  headers={
+      tabla:"Aplicant",
+      peticion:"EditStatusAp",
+      'x-match':'all'
+      };
+
+      Publish(headers,{
+          idEmployee,
+          idJob:idJob,
+          status:status,
+          fecha:formattedDate
+      });
+      const  headers1={
+        tabla:"UserEmployee",
+        peticion:"EditStatusE",
+        'x-match':'all'
+        };
+      
+        
+        Publish(headers1,{
+            idEmployee,
+            idJob,
+            status:status,
+            fecha:formattedDate
+        });
+        const  headers2={
+          tabla:"UserEmployee",
+          peticion:"AddNotifyE",
+          'x-match':'all'
+          };
+          Publish(headers2,{
+              _id:idEmployee,
+              notification:"Hay cambios en tus postulaciones"
+          }); 
+      let data={
+          ok:"Modificado Correctamente"
+           }
+res.send(data);
+      
+    } catch (error) {
+      console.error(error)
+    }
+    
+    
+  }, 
   editLogo:async(req,res)=>{
 
     let fileValidation=files(req.file,"photo");

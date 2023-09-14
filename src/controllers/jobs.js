@@ -4,6 +4,7 @@ const Aplicants = require("../models/Aplicants");
 const { emptydatas } = require("../helpers/validations");
 const { Publish } = require("../helpers/rabbitMQ");
 const {MakeDecision}=require("../helpers/treeCART");
+const mongoose = require('mongoose');
 module.exports = {
   Fcreate: (req, res) => {
     res.render("jobs/Fcreate");
@@ -222,6 +223,24 @@ module.exports = {
     } catch (error) {
       console.log(error);
     }
+  },
+  showJob: async (req, res) => {
+    if (mongoose.isValidObjectId(req.params.id)) {
+    let job;
+    try {
+      job = await Jobs.findById(req.params.id);
+      if(job){
+        res.send(job);
+      }else{
+        let data={
+          error:"No se encontro el Trabajo"
+        }
+        res.send(data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
   },
   searchJobs: async (req, res) => {
     const { busqueda } = req.body;
