@@ -15,6 +15,7 @@ const UserEmployeeSchema = new Schema({
     skills:{type:Array,required:false},
     ///certificates:{type:String,required:true},
     ///keys:{type:String,required:true},
+    sector:{type:String,required:true},
     CV: { type: Buffer, required: false },
     photo: { type: Buffer, required: false },
 });

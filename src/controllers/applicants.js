@@ -17,7 +17,7 @@ module.exports={
         }else{
             aplicants.idsEmployee.forEach(idEmp => {
   
-                if(idEmp===idEmployee)
+                if(idEmp.idEmployee===idEmployee)
                 bandPost=true
             });
 
@@ -67,9 +67,15 @@ module.exports={
                             peticion:"AddNotifyC",
                             'x-match':'all'
                             };
+                            let notificacion={
+                                notificacion:"Se postulo alguien nuevo",
+                                state:"No Visto",
+                                job:job.title,
+                                idJob:job._id,
+                            }
                             Publish(headers2,{
                                 _id:job.idUserCompany,
-                                notification:"Se postulo alguien nuevo"
+                                notification:notificacion
                             }); 
                         let data={
                             ok:"Postulado Correctamente"
@@ -100,26 +106,7 @@ module.exports={
     },
 
     showAplicants:async(req,res)=>{
-        // if (mongoose.isValidObjectId(req.params.id)) {
-        //     try {
-        //       const aplicants = await Aplicants.findOne({ idJobs: req.params.id }).lean();
-          
-        //       if (!aplicants || aplicants.idsEmployee.length === 0) {
-        //         const data = {
-        //           error: "No hay aplicantes",
-        //         };
-        //         return res.send(data);
-        //       }
-          
-        //       // Obtén todos los aplicantes en una sola consulta
-        //       const aplicantesIds = aplicants.idsEmployee;
-        //       const aplicantes = await UserEmployee.find({ _id: { $in: aplicantesIds } }).lean();
-          
-        //       res.json(aplicantes);
-        //     } catch (error) {
-        //       console.error(error);
-        //     }
-        //   }
+            
         if (mongoose.isValidObjectId(req.params.id)) {
             try {
               const aplicants = await Aplicants.findOne({ idJobs: req.params.id }).lean();

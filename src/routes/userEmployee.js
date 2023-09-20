@@ -21,5 +21,6 @@ router.put("/editPhoto/:id",upload.single("photo"),Controller.editPhoto);
 router.put("/editCV/:id",upload.single("CV"),Controller.editCV);
 router.delete('/postulaciones/delete',Controller.deletePostulation);
 router.get('/postulaciones/:id',Controller.showPostulations);
-
+router.get("/notify/:id",Controller.getNotify);
+router.post("/notify/:id",Controller.SeeNotify)
 module.exports=router;

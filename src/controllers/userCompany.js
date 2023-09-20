@@ -5,6 +5,7 @@ const { userValidation, emptydatas,files } = require("../helpers/validations");
 const { Publish } = require("../helpers/rabbitMQ");
 const mongoose = require('mongoose');
 const fs = require("fs");
+const { group } = require("console");
 module.exports = {
   Create: async (req, res) => {
     const {
@@ -204,8 +205,8 @@ module.exports = {
   changeStatus:async(req,res)=>{
     try {
     const {idJob,idEmployee,status}=req.body;
-    console.log(idJob,idEmployee,status);
-
+    
+    const job=await Jobs.findById(idJob);
     const currentDate = new Date();
     const formattedDate = currentDate.toISOString();
     const  headers={
@@ -238,9 +239,15 @@ module.exports = {
           peticion:"AddNotifyE",
           'x-match':'all'
           };
+          let notificacion={
+            notificacion:"Hubo un cambio en tu postulacion",
+            state:"No Visto",
+            job:job.title,
+            idJob:job._id,
+        }
           Publish(headers2,{
               _id:idEmployee,
-              notification:"Hay cambios en tus postulaciones"
+              notification:notificacion
           }); 
       let data={
           ok:"Modificado Correctamente"
@@ -280,6 +287,91 @@ res.send(data);
               };
               res.json(data);
           }
+  },
+  getNotify:async (req,res)=>{
+    try {
+      if (mongoose.isValidObjectId(req.params.id)) {
+        const Company = await UserCompany.findById(req.params.id).lean();
+        let groupNotifySee=[];
+        let groupNotifyUnSee=[];
+        let bandSee=false;
+        let bandUnSee=false;
+         Company.notifications.forEach(notify => {
+          groupNotifyUnSee.forEach(group => {
+             if(group.idJob==notify.idJob ){
+              bandUnSee=true
+               if(notify.state=="No Visto"){
+                group.numNotify++;
+               }
+             }
+           });
+           groupNotifySee.forEach(group => {
+            if(group.idJob==notify.idJob ){
+              bandSee=true
+              if(notify.state=="Visto"){
+               group.numNotify++;
+              }
+            }
+          });
+
+           if(bandSee==false){
+            if(notify.state=="Visto"){
+              let auxNotify=notify;
+              auxNotify.numNotify=1;
+              groupNotifySee.push(auxNotify)
+             }
+           }
+           if(bandUnSee==false){
+            if(notify.state=="No Visto"){
+              let auxNotify=notify;
+              auxNotify.numNotify=1;
+              groupNotifyUnSee.push(auxNotify)
+             }
+           }
+           bandUnSee=false;
+           bandSee=false;
+         });   
+        let groupNotify={
+          groupNotifySee,
+          groupNotifyUnSee
+        }     
+
+        res.json(groupNotify);
+      }else{
+        let data={
+          error:"Id Invalido"
+        }
+        res.send(data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  },
+  SeeNotify:async (req,res)=>{
+     
+    try {
+      if (mongoose.isValidObjectId(req.params.id)) {
+        const  headers={
+          tabla:"UserCompany",
+          peticion:"SeeNotifyC",
+          'x-match':'all'
+        };
+        Publish(headers,{
+          _id:req.params.id,
+        });
+        let data={
+          ok:"Modificado"
+        }
+        res.send(data);
+      }else{
+        let data={
+          error:"Id Invalido"
+        }
+        res.send(data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
   },
 
 };

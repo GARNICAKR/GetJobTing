@@ -225,16 +225,20 @@ module.exports = {
     }
   },
   showJob: async (req, res) => {
+    console.log("antes")
     if (mongoose.isValidObjectId(req.params.id)) {
+      console.log("despues",req.params.id)
     let job;
     try {
       job = await Jobs.findById(req.params.id);
       if(job){
+        console.log(job)
         res.send(job);
       }else{
         let data={
           error:"No se encontro el Trabajo"
         }
+        
         res.send(data);
       }
     } catch (error) {

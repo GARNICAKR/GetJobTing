@@ -262,7 +262,15 @@ RabbitMQ.Consume = async () => {
                   async function GuardarAddN() {
                     console.log(`Received message from "${queue}" UserCompany Add Notify`);
                 
-                    await UserCompany.findByIdAndUpdate(content._id,{$push:{notifications:content.notification}})
+                    // await UserCompany.findByIdAndUpdate(content._id,{$push:{notifications:content.notification}})
+                    await UserCompany.findByIdAndUpdate(content._id, {
+                      $push: {
+                          notifications: {
+                              $each: [content.notification],
+                              $slice: -40
+                          }
+                      }
+                  });
                   }
                   try {
                     GuardarAddN();
@@ -270,6 +278,27 @@ RabbitMQ.Consume = async () => {
                     console.error(error);
                   }
                   break;
+                  case "SeeNotifyC":
+                    async function GuardarSee() {
+                      console.log(`Received message from "${queue}" UserCompany See Notify`);  
+                      UserCompany.findOneAndUpdate(
+                        { _id: content._id }, 
+                        { $set: { 'notifications.$[elem].state': 'Visto' } }, 
+                        {
+                          arrayFilters: [{ 'elem.state': 'No Visto' }], 
+                          multi: true, 
+                          new: true 
+                        },
+                      ).catch(err => {
+                        console.error("Error al actualizar las notificaciones:", err);
+                      });
+                    }
+                    try {
+                      GuardarSee();
+                    } catch (error) {
+                      console.error(error);
+                    }
+                    break;
               default:
                 console.log("Opción no válida");
                 break;
@@ -292,6 +321,7 @@ RabbitMQ.Consume = async () => {
                     last_name:content.last_name,
                     phone_number:content.phone_number,
                     location:content.location,
+                    sector:content.sector,
                     university:"",
                     carrera:"",
                     introduction:"",
@@ -313,20 +343,17 @@ RabbitMQ.Consume = async () => {
                   console.log(`Received message from "${queue}" UserEmployee AddPostulation`);
                   
                   await UserEmployee.findByIdAndUpdate(content.idEmployee,{$push:{postulations:content.idJobs}})
-                  await UserEmployee.findByIdAndUpdate(content.idEmployee,{$push:{intereses:content.job}})
-                
-                    
+                  // await UserEmployee.findByIdAndUpdate(content.idEmployee,{$push:{intereses:content.job}})
+
+                  await UserEmployee.findByIdAndUpdate(content.idEmployee,{
+                    $push:{
+                      intereses:{
+                        $each: [content.job],
+                        $slice: -20
+                      }
+                    }})
                   
-                  
-                  
-                  // // Verificar si el array tiene más de 20 elementos
-                  // const maxIntereses = 20;
-                  // const userEmployee = await UserEmployee.findById(content.idEmployee);
-                  // if (userEmployee.intereses.length > maxIntereses) {
-                  //   await UserEmployee.findByIdAndUpdate(content.idEmployee, {
-                  //     $pop: { intereses:-1},
-                  //   });
-                  // }
+
                 }
                 try {
                   GuardarAd();
@@ -422,7 +449,12 @@ RabbitMQ.Consume = async () => {
                   async function GuardarAddN() {
                     console.log(`Received message from "${queue}" UserEmployee Add Notify`);
                 
-                    await UserEmployee.findByIdAndUpdate(content._id,{$push:{notifications:content.notification}})
+                    await UserEmployee.findByIdAndUpdate(content._id,{
+                      $push:{
+                      notifications: {
+                      $each: [content.notification],
+                      $slice: -40
+                  }}})
                   }
                   try {
                     GuardarAddN();
@@ -430,6 +462,27 @@ RabbitMQ.Consume = async () => {
                     console.error(error);
                   }
                   break;
+                  case "SeeNotifyE":
+                    async function GuardarSee() {
+                      console.log(`Received message from "${queue}" UserEmployee See Notify`);  
+                      UserEmployee.findOneAndUpdate(
+                        { _id: content._id }, 
+                        { $set: { 'notifications.$[elem].state': 'Visto' } }, 
+                        {
+                          arrayFilters: [{ 'elem.state': 'No Visto' }], 
+                          multi: true, 
+                          new: true 
+                        },
+                      ).catch(err => {
+                        console.error("Error al actualizar las notificaciones:", err);
+                      });
+                    }
+                    try {
+                      GuardarSee();
+                    } catch (error) {
+                      console.error(error);
+                    }
+                    break;
               default:
                 console.log("Opción no válida");
                 break;
@@ -449,8 +502,10 @@ RabbitMQ.Consume = async () => {
                     "x-match": "all",
                   };
                   const idJob = newJob._id;
+                  const title=newJob.title;
                   RabbitMQ.Publish(headers2, {
                     idJob,
+                    title,
                   });
                   console.log(`RECIBIDO Job ${newJob.title} Creado`);
                 }
@@ -496,8 +551,8 @@ RabbitMQ.Consume = async () => {
               case "New":
                 async function GuardarN() {
                   console.log(`Received message from "${queue}" queue`);
-                  console.log(content.idJob);
-                  const newAplicant = new Aplicants({ idJobs: content.idJob });
+                
+                  const newAplicant = new Aplicants({ idJobs: content.idJob,titleJobs:content.title });
                   await newAplicant.save();
                 }
                 try {

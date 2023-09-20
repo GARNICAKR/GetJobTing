@@ -25,6 +25,7 @@ Validations.userValidation = async (mail, password, type_user) => {
   return band;
 };
 Validations.files = (files, type) => {
+  if(files.size){
   const maxSize = 1024 * 1024;
   if (type === "photo") {
     if (files.mimetype.split("/")[0] != "image") {
@@ -43,6 +44,9 @@ Validations.files = (files, type) => {
       return "El pdf es muy grande";
     } 
   }
+}else{
+  return "No se envio Archivo";
+}
   return false;
 };
 module.exports = Validations;

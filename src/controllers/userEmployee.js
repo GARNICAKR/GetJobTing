@@ -19,6 +19,7 @@ module.exports = {
         country,
         state,
         city,
+        sector,
       } = req.body;
 
      
@@ -36,6 +37,7 @@ module.exports = {
           country,
           state,
           city,
+          sector,
 
         ];
 
@@ -87,7 +89,7 @@ module.exports = {
                 last_name,
                 phone_number,
                 location,
-           
+                sector,
                 CV,
                 photo,
               });
@@ -137,7 +139,7 @@ module.exports = {
   },
   Edit: async (req, res) => {
  
-    const { name, last_name, phone_number, country, state, city,university,carrera,introduction,skills } =
+    const { name, last_name, phone_number, country, state, city,university,carrera,introduction,skills,sector } =
       req.body;
     const datavalid = [
       name,
@@ -146,7 +148,7 @@ module.exports = {
       country,
       state,
       city,
-
+      sector,
     ];
     if (!emptydatas(datavalid)) {
       let data = {
@@ -175,6 +177,7 @@ module.exports = {
           university,
           carrera,
           introduction,
+          sector,
           skills:auxSkills
         },
       });
@@ -280,9 +283,89 @@ module.exports = {
           }
 
   },
-  pruba: async (req, res) => {
-    const userid = "63e6e7b454f40c62e23587ec";
-    const user = await UserEmployee.findOne({ idUser: userid });
-    res.json(user);
+
+  getNotify:async (req,res)=>{
+    try {
+      if (mongoose.isValidObjectId(req.params.id)) {
+        const Employee = await UserEmployee.findById(req.params.id).lean();
+        let groupNotifySee=[];
+        let groupNotifyUnSee=[];
+        let bandSee=false;
+        let bandUnSee=false;
+        Employee.notifications.forEach(notify => {
+          groupNotifyUnSee.forEach(group => {
+             if(group.idJob==notify.idJob ){
+              bandUnSee=true
+               if(notify.state=="No Visto"){
+                group.numNotify++;
+               }
+             }
+           });
+           groupNotifySee.forEach(group => {
+            if(group.idJob==notify.idJob ){
+              bandSee=true
+              if(notify.state=="Visto"){
+               group.numNotify++;
+              }
+            }
+          });
+
+           if(bandSee==false){
+            if(notify.state=="Visto"){
+              let auxNotify=notify;
+              auxNotify.numNotify=1;
+              groupNotifySee.push(auxNotify)
+             }
+           }
+           if(bandUnSee==false){
+            if(notify.state=="No Visto"){
+              let auxNotify=notify;
+              auxNotify.numNotify=1;
+              groupNotifyUnSee.push(auxNotify)
+             }
+           }
+           bandUnSee=false;
+           bandSee=false;
+         });   
+        let groupNotify={
+          groupNotifySee,
+          groupNotifyUnSee
+        }     
+
+        res.json(groupNotify);
+      }else{
+        let data={
+          error:"Id Invalido"
+        }
+        res.send(data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  },
+  SeeNotify:async (req,res)=>{
+    try {
+      if (mongoose.isValidObjectId(req.params.id)) {
+        const  headers={
+          tabla:"UserEmployee",
+          peticion:"SeeNotifyE",
+          'x-match':'all'
+        };
+        Publish(headers,{
+          _id:req.params.id,
+        });
+        let data={
+          ok:"Modificado"
+        }
+        res.send(data);
+      }else{
+        let data={
+          error:"Id Invalido"
+        }
+        res.send(data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
   },
 };

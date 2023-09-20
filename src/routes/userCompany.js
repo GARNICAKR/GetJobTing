@@ -17,4 +17,6 @@ router.route("/edit/:id")
   router.get("/show",Controller.showCompanies);
   router.put("/changeStatus",Controller.changeStatus)
   router.get("/:id",Controller.ShowCompany);
+  router.get("/notify/:id",Controller.getNotify);
+  router.post("/notify/:id",Controller.SeeNotify)
 module.exports=router;

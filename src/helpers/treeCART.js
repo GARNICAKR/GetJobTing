@@ -1,10 +1,13 @@
 const DataFrame = require('dataframe-js').DataFrame;
 const UserEmployee = require("../models/UsersEmployee");
 const { DecisionTreeClassifier } = require('ml-cart');
+const User = require("../models/Users");
 //const { OneHotEncoder } = require('one-hot-encoder');
 let treeCART={}
 
 treeCART.MakeDecision= async ()=>{
+  
+
 //   let data = [[0, 0], [0, 1], [1, 0], [1, 1]]; // Tus vectores de características
 // let predictions = [0, 1, 1, 0]; // Las etiquetas de tus datos
 
