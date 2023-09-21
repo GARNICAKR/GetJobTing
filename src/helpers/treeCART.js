@@ -1,65 +1,63 @@
-const DataFrame = require('dataframe-js').DataFrame;
 const UserEmployee = require("../models/UsersEmployee");
-const { DecisionTreeClassifier } = require('ml-cart');
+const Jobs = require("../models/Jobs");
 const User = require("../models/Users");
+const dataJobs = require('./data.json');
+const fs = require('fs');
 //const { OneHotEncoder } = require('one-hot-encoder');
 let treeCART={}
 
 treeCART.MakeDecision= async ()=>{
-  
 
-//   let data = [[0, 0], [0, 1], [1, 0], [1, 1]]; // Tus vectores de características
-// let predictions = [0, 1, 1, 0]; // Las etiquetas de tus datos
+let employee = await UserEmployee.findOne();
+let jobs = await Jobs.find().lean();
+let categories = ['Salud', 'Economia y Finanzas', 'Tecnologia e Informatica', 'Educacion', 'Ingenieria', 'Arte y Cultura', 'Servicios al Cliente', 'Construccion y Oficios', 'Ciencias Naturales', 'Comunicacion y Medios'];
 
-// let classifier = new DecisionTreeClassifier();
-// classifier.train(data, predictions);
+//sector y skills trabajo
+let datajobsFilter = dataJobs.map((job)=>{
+  let skillsP = cleanArray(job.conocimientos);
+  let sector = cleanArray(eliminarStopWordsEnArreglo([job.sector]))
+  let description = cleanArray(eliminarStopWordsEnArreglo([job.description])).concat(sector)
+  let palabrasReq = cleanArray(eliminarStopWordsEnArreglo([job.requisitos])).concat(description)
+  let palabrasSkills = eliminarStopWordsEnArreglo(skillsP).concat(palabrasReq);
+  return {
+    sector: job.sector,
+    skills:  skillsP,
+    palabrasClave : cleanArray(eliminarStopWordsEnArreglo([job.responsabilidades])).concat(palabrasSkills)
+  };
+})
+// console.log(datajobsFilter)
 
-// let prediction = classifier.predict([0, 0]);
+//sector skills perfil
+let skillsEmployee = cleanArray(employee.skills)
+let sector = cleanArray(eliminarStopWordsEnArreglo([employee.sector]))
+let palabrasClave = eliminarStopWordsEnArreglo(skillsEmployee).concat(sector)
+let dataEmployeeFilter = {
+  sector: employee.sector,
+  skills: skillsEmployee,
+  palabrasClave: palabrasClave,
+  intereses: []
+}
+// console.log(dataEmployeeFilter)
+// console.log(employee.intereses)
+//intereses es un array de objetos que contienen los datos de los empleos pasados
 
-  let employee = await UserEmployee.findOne();
-  conocimientosSalud="Consulta de primer nivel, atención al cliente, excelente actitud de servicio.";
-  let cleanConocimientosInteres=[]
-  let conocimientos=[]
-  let cleanJobInteres=[]
-  let sectorInteres=[]
-  employee.intereses.forEach((interes) => {
-    cleanConocimientosInteres=cleanConocimientosInteres.concat(interes.conocimientos.split(/[,\n]+/));
-    cleanJobInteres.push(interes.title);
-    sectorInteres.push(interes.sector);
-});
-cleanConocimientosInteres=cleanArray(cleanConocimientosInteres)
-cleanJobInteres=cleanArray(cleanJobInteres)
-conocimientos=cleanArray(employee.skills)
-cleanConocimientosInteres=cleanConocimientosInteres.concat(conocimientos)
-cleanConocimientosInteres=new Set(cleanConocimientosInteres);
-cleanConocimientosInteres=[...cleanConocimientosInteres]
+// employee.intereses.forEach((job)=>{
+//   let title = cleanArray(eliminarStopWordsEnArreglo([job.title]))
+//   let conocimientos = cleanArray(eliminarStopWordsEnArreglo([job.conocimientos])).concat(title)
+//   dataEmployeeFilter.intereses = dataEmployeeFilter.intereses.concat(conocimientos)
+// })
+console.log(dataEmployeeFilter)
+let archivoJson = datajobsFilter.map((job)=>{
 
-console.log(cleanConocimientosInteres);
-console.log(cleanJobInteres);
-console.log(conocimientos);
-
-  //console.log(employee.intereses[0].conocimientos);
-  let categories = ['Salud', 'Economía y Finanzas', 'Tecnología e Informática', 'Educación', 'Ingeniería', 'Arte y Cultura', 'Servicios al Cliente', 'Construcción y Oficios', 'Ciencias Naturales', 'Comunicación y Medios'];
-
-
-  // Crear un objeto para almacenar las categorías codificadas64f7f3cf6d8f594f8a80ec42
-  let encodedCategories = {};
-  
-  // Para cada categoría, crear un nuevo array con una longitud igual a la cantidad de categorías
-  for (let i = 0; i < categories.length; i++) {
-      let category = categories[i];
-  
-      // Crear un nuevo array on todos los valores establecidos en 0
-      let encodedCategory = Array(categories.length).fill(0);
-  
-      // Establecer el valor en el índice actual en 1
-      encodedCategory[i] = 1;
-  
-      // Agregar la categoría codificada al objeto
-      encodedCategories[category] = encodedCategory;
+  let match = contarPalabrasIguales(dataEmployeeFilter.palabrasClave,job.palabrasClave)
+  return {
+    match: match,
+    sector: job.sector
   }
-  
-  //console.log(encodedCategories);
+})
+const jsonString = JSON.stringify(archivoJson);
+// fs.writeFileSync('archivoSalud', jsonString);
+
 }
 module.exports = treeCART;
 
@@ -84,3 +82,35 @@ array = array.map(skill => {
 
 return array;
 }
+
+function eliminarStopWordsEnArreglo(arreglo) {
+  // Lista de palabras basura (stop words)
+  const stopWords = ['al', 'tus','(a', 'a', 'i', 'e' ,'el', 'la','eres','tienes','traves', 'tiene','tienen', 'soy','nuestro','tuyo','mio', 'de', 'los','traves', 'las', 'y', 'en', 'con', 'por', 'para', 'o', 'u', 'del', 'te' ,'si', 'como', 'un'];
+
+  // Función para eliminar palabras basura de una cadena
+  function eliminarStopWordsDeCadena(cadena) {
+    const palabras = cadena.split(' ');
+    const palabrasFiltradas = palabras.filter(palabra => !stopWords.includes(palabra.toLowerCase()));
+    return palabrasFiltradas;
+  }
+
+  // Aplicar la función a cada cadena en el arreglo y convertirlas en un solo arreglo
+  const resultado = arreglo.flatMap(cadena => eliminarStopWordsDeCadena(cadena));
+
+  return resultado;
+}
+
+function contarPalabrasIguales(arreglo1, arreglo2) {
+  let count = 0;
+
+  // Recorre el primer arreglo
+  for (const palabra1 of arreglo1) {
+    // Verifica si la palabra está en el segundo arreglo
+    if (arreglo2.includes(palabra1)) {
+      count++;
+    }
+  }
+
+  return count;
+}
+
