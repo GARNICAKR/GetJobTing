@@ -8,21 +8,20 @@ let treeCART={}
 
 treeCART.MakeDecision= async ()=>{
 
-let employee = await UserEmployee.findOne();
+let employee = await UserEmployee.findById('650a665a31423d0269d7fc84');
 let jobs = await Jobs.find().lean();
-let categories = ['Salud', 'Economia y Finanzas', 'Tecnologia e Informatica', 'Educacion', 'Ingenieria', 'Arte y Cultura', 'Servicios al Cliente', 'Construccion y Oficios', 'Ciencias Naturales', 'Comunicacion y Medios'];
 
 //sector y skills trabajo
-let datajobsFilter = dataJobs.map((job)=>{
-  let skillsP = cleanArray(job.conocimientos);
-  let sector = cleanArray(eliminarStopWordsEnArreglo([job.sector]))
-  let description = cleanArray(eliminarStopWordsEnArreglo([job.description])).concat(sector)
-  let palabrasReq = cleanArray(eliminarStopWordsEnArreglo([job.requisitos])).concat(description)
+let datajobsFilter = jobs.map((job)=>{
+  let skillsP = cleanArray([job.about_job[0].conocimientos]);
+  let sector = cleanArray(eliminarStopWordsEnArreglo([job.about_job[0].sector]))
+  let description = cleanArray(eliminarStopWordsEnArreglo([job.about_job[0].description])).concat(sector)
+  let palabrasReq = cleanArray(eliminarStopWordsEnArreglo([job.about_job[0].requisitos])).concat(description)
   let palabrasSkills = eliminarStopWordsEnArreglo(skillsP).concat(palabrasReq);
   return {
-    sector: job.sector,
-    skills:  skillsP,
-    palabrasClave : cleanArray(eliminarStopWordsEnArreglo([job.responsabilidades])).concat(palabrasSkills)
+    sector: job.about_job[0].sector,
+    skills:  eliminarStopWordsEnArreglo(skillsP),
+    palabrasClave : cleanArray(eliminarStopWordsEnArreglo([job.about_job[0].responsabilidades])).concat(palabrasSkills)
   };
 })
 // console.log(datajobsFilter)
@@ -33,7 +32,7 @@ let sector = cleanArray(eliminarStopWordsEnArreglo([employee.sector]))
 let palabrasClave = eliminarStopWordsEnArreglo(skillsEmployee).concat(sector)
 let dataEmployeeFilter = {
   sector: employee.sector,
-  skills: skillsEmployee,
+  skills: eliminarStopWordsEnArreglo(skillsEmployee),
   palabrasClave: palabrasClave,
   intereses: []
 }
@@ -46,22 +45,111 @@ let dataEmployeeFilter = {
 //   let conocimientos = cleanArray(eliminarStopWordsEnArreglo([job.conocimientos])).concat(title)
 //   dataEmployeeFilter.intereses = dataEmployeeFilter.intereses.concat(conocimientos)
 // })
-console.log(dataEmployeeFilter)
-let archivoJson = datajobsFilter.map((job)=>{
-
-  let match = contarPalabrasIguales(dataEmployeeFilter.palabrasClave,job.palabrasClave)
+let dataMatch = datajobsFilter.map((job)=>{
+  let matchPC = contarPalabrasIguales(dataEmployeeFilter.palabrasClave,job.palabrasClave) / job.palabrasClave.length;
+  let matchSkills = contarPalabrasIguales(dataEmployeeFilter.skills,job.skills) / job.skills.length;
+  let matchSector = dataEmployeeFilter.sector==job.sector;
+  if(matchPC>0.075 && matchSector){
+    matchPC = matchPC + .25;
+  }
+  if(matchPC>0.075 && matchSkills>.19){
+    matchPC = matchPC + .25;
+  }
   return {
-    match: match,
-    sector: job.sector
+    match: matchPC,
+    sector: job.sector,
   }
 })
-const jsonString = JSON.stringify(archivoJson);
-// fs.writeFileSync('archivoSalud', jsonString);
+console.log(dataMatch)
+// const jsonString = JSON.stringify(dataMatch);
+// fs.writeFileSync('archivoComunicacionMedios', jsonString);
+
+let categories = ['Salud', 'Economia y Finanzas', 'Tecnologia e Informatica', 'Educacion', 'Ingenieria', 'Arte y Cultura', 'Servicios al Cliente', 'Construccion y Oficios', 'Ciencias Naturales', 'Comunicacion y Medios'];
+let scatterplot = jobs.filter((job,index)=>{
+  if(numToCategory(job.about_job[0].sector)>=5){
+    if(numToCategory(job.about_job[0].sector)>7){
+      if(numToCategory(job.about_job[0].sector)==9){//==9
+        if(dataMatch[index].match>.1){
+          return job
+        }else{
+          return
+        }
+      }else{//==8
+        if(dataMatch[index].match>.1){
+          return job
+        }else{
+          return
+        }
+      }
+    }else{
+      if(numToCategory(job.about_job[0].sector)==7){//==7
+        if(dataMatch[index].match>.1){
+          return job
+        }else{
+          return
+        }
+      }else{
+        if(numToCategory(job.about_job[0].sector)==6){//==6
+          if(dataMatch[index].match>.1){
+            return job
+          }else{
+            return
+          }
+        }else{//5
+          if(dataMatch[index].match>.1){
+            return job
+          }else{
+            return
+          }
+        }
+      }
+    }
+  }else{//menor a 5
+    if(numToCategory(job.about_job[0].sector)<=2){//menor a 2
+      if(numToCategory(job.about_job[0].sector)==0){//==0
+        if(dataMatch[index].match>.1){
+          return job
+        }else{
+          return
+        }
+      }else{
+        if(numToCategory(job.about_job[0].sector)==1){//==1
+          if(dataMatch[index].match>.1){
+            return job
+          }else{
+            return
+          }
+        }else{//==2
+          if(dataMatch[index].match>.1){
+            return job
+          }else{
+            return
+          }
+        }
+      }
+    }else{//mayor a 2
+      if(numToCategory(job.about_job[0].sector)==3){//==3
+        if(dataMatch[index].match>.1){
+          return job
+        }else{
+          return
+        }
+      }else{//==4
+        if(dataMatch[index].match>.1){
+          return job
+        }else{
+          return
+        }
+      }
+    }
+  }
+})
+console.log(scatterplot);
 
 }
 module.exports = treeCART;
 
-function cleanArray(array){
+function cleanArray(array){//limpia un array de palabras con acentos, comas, etc
 //elimina elementos vacios 
 array = array.filter(skill => skill.trim() !== "")
 array = array.map(skill => {
@@ -83,7 +171,7 @@ array = array.map(skill => {
 return array;
 }
 
-function eliminarStopWordsEnArreglo(arreglo) {
+function eliminarStopWordsEnArreglo(arreglo) {//retona arreglo de palabras individuales sin palabras conectores o inecesarias
   // Lista de palabras basura (stop words)
   const stopWords = ['al', 'tus','(a', 'a', 'i', 'e' ,'el', 'la','eres','tienes','traves', 'tiene','tienen', 'soy','nuestro','tuyo','mio', 'de', 'los','traves', 'las', 'y', 'en', 'con', 'por', 'para', 'o', 'u', 'del', 'te' ,'si', 'como', 'un'];
 
@@ -100,7 +188,7 @@ function eliminarStopWordsEnArreglo(arreglo) {
   return resultado;
 }
 
-function contarPalabrasIguales(arreglo1, arreglo2) {
+function contarPalabrasIguales(arreglo1, arreglo2) {//comprueba 2 arreglo y retorna la cantidad de veces que palabras en el arreglo hicieron match
   let count = 0;
 
   // Recorre el primer arreglo
@@ -112,5 +200,15 @@ function contarPalabrasIguales(arreglo1, arreglo2) {
   }
 
   return count;
+}
+
+function numToCategory(categoria){
+  let categories = ['Salud', 'Economia y Finanzas', 'Tecnologia e Informatica', 'Educacion', 'Ingenieria', 'Arte y Cultura', 'Servicios al Cliente', 'Construccion y Oficios', 'Ciencias Naturales', 'Comunicacion y Medios'];
+  const indice = categories.indexOf(categoria);
+  if (indice !== -1) {
+    return indice;
+  } else {
+    return 'La categoría no se encontró en la lista.';
+  }
 }
 
