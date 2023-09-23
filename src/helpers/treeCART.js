@@ -6,9 +6,9 @@ const fs = require('fs');
 //const { OneHotEncoder } = require('one-hot-encoder');
 let treeCART={}
 
-treeCART.MakeDecision= async ()=>{
+treeCART.MakeDecision= async (id)=>{
 
-let employee = await UserEmployee.findById('650a665a31423d0269d7fc84');
+let employee = await UserEmployee.findById(id);
 let jobs = await Jobs.find().lean();
 
 //sector y skills trabajo
@@ -60,7 +60,7 @@ let dataMatch = datajobsFilter.map((job)=>{
     sector: job.sector,
   }
 })
-console.log(dataMatch)
+// console.log(dataMatch)
 // const jsonString = JSON.stringify(dataMatch);
 // fs.writeFileSync('archivoComunicacionMedios', jsonString);
 
@@ -144,8 +144,8 @@ let scatterplot = jobs.filter((job,index)=>{
     }
   }
 })
-console.log(scatterplot);
-
+// console.log(scatterplot);
+return scatterplot;
 }
 module.exports = treeCART;
 

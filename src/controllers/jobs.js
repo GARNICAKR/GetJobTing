@@ -291,4 +291,10 @@ module.exports = {
     sendRequests(0);
     res.send("OK");
   },
+  desicionTree: async(req, res) => {
+    const id = req.params.id;
+    let jobs = await MakeDecision(id);
+    console.log(jobs)
+    res.json(jobs);
+  },
 };

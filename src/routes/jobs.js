@@ -9,6 +9,7 @@ router.route("/")
 router.get("/oferta",Controller.showJobs);
 router.post("/search",Controller.searchJobs);
 router.get("/prueba",Controller.pruebaRabbit);
+router.get("/desicionTree/:id",Controller.desicionTree);
 router.route("/:id")
     .get(Controller.showJob)
     .put(Controller.edit)
