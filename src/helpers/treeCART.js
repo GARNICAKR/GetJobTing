@@ -9,14 +9,14 @@ let treeCART={}
 treeCART.MakeDecision= async (id)=>{
 
 let employee = await UserEmployee.findById(id);
-let jobs = await Jobs.find().lean();
+let jobs = await Jobs.find().populate({ path: "idUserCompany", select: "nameCompany logo description" }).lean();
 
 //sector y skills trabajo
 let datajobsFilter = jobs.map((job)=>{
   let skillsP = cleanArray([job.about_job[0].conocimientos]);
-  let sector = cleanArray(eliminarStopWordsEnArreglo([job.about_job[0].sector]))
-  let description = cleanArray(eliminarStopWordsEnArreglo([job.about_job[0].description])).concat(sector)
-  let palabrasReq = cleanArray(eliminarStopWordsEnArreglo([job.about_job[0].requisitos])).concat(description)
+  let sector = cleanArray(eliminarStopWordsEnArreglo([job.about_job[0].sector]));
+  let description = cleanArray(eliminarStopWordsEnArreglo([job.about_job[0].description])).concat(sector);
+  let palabrasReq = cleanArray(eliminarStopWordsEnArreglo([job.about_job[0].requisitos])).concat(description);
   let palabrasSkills = eliminarStopWordsEnArreglo(skillsP).concat(palabrasReq);
   return {
     sector: job.about_job[0].sector,
@@ -64,18 +64,20 @@ let dataMatch = datajobsFilter.map((job)=>{
 // const jsonString = JSON.stringify(dataMatch);
 // fs.writeFileSync('archivoComunicacionMedios', jsonString);
 
-let categories = ['Salud', 'Economia y Finanzas', 'Tecnologia e Informatica', 'Educacion', 'Ingenieria', 'Arte y Cultura', 'Servicios al Cliente', 'Construccion y Oficios', 'Ciencias Naturales', 'Comunicacion y Medios'];
+let ids = [];
 let scatterplot = jobs.filter((job,index)=>{
   if(numToCategory(job.about_job[0].sector)>=5){
     if(numToCategory(job.about_job[0].sector)>7){
       if(numToCategory(job.about_job[0].sector)==9){//==9
         if(dataMatch[index].match>.1){
+          ids.push(index);
           return job
         }else{
           return
         }
       }else{//==8
         if(dataMatch[index].match>.1){
+          ids.push(index);
           return job
         }else{
           return
@@ -84,6 +86,7 @@ let scatterplot = jobs.filter((job,index)=>{
     }else{
       if(numToCategory(job.about_job[0].sector)==7){//==7
         if(dataMatch[index].match>.1){
+          ids.push(index);
           return job
         }else{
           return
@@ -91,12 +94,14 @@ let scatterplot = jobs.filter((job,index)=>{
       }else{
         if(numToCategory(job.about_job[0].sector)==6){//==6
           if(dataMatch[index].match>.1){
+            ids.push(index);
             return job
           }else{
             return
           }
         }else{//5
           if(dataMatch[index].match>.1){
+            ids.push(index);
             return job
           }else{
             return
@@ -108,6 +113,7 @@ let scatterplot = jobs.filter((job,index)=>{
     if(numToCategory(job.about_job[0].sector)<=2){//menor a 2
       if(numToCategory(job.about_job[0].sector)==0){//==0
         if(dataMatch[index].match>.1){
+          ids.push(index);
           return job
         }else{
           return
@@ -115,12 +121,14 @@ let scatterplot = jobs.filter((job,index)=>{
       }else{
         if(numToCategory(job.about_job[0].sector)==1){//==1
           if(dataMatch[index].match>.1){
+            ids.push(index);
             return job
           }else{
             return
           }
         }else{//==2
           if(dataMatch[index].match>.1){
+            ids.push(index);
             return job
           }else{
             return
@@ -130,12 +138,14 @@ let scatterplot = jobs.filter((job,index)=>{
     }else{//mayor a 2
       if(numToCategory(job.about_job[0].sector)==3){//==3
         if(dataMatch[index].match>.1){
+          ids.push(index);
           return job
         }else{
           return
         }
       }else{//==4
         if(dataMatch[index].match>.1){
+          ids.push(index);
           return job
         }else{
           return
@@ -145,6 +155,42 @@ let scatterplot = jobs.filter((job,index)=>{
   }
 })
 // console.log(scatterplot);
+let jobsProb = [];
+if(scatterplot.length<6){
+  console.log(scatterplot.length)
+  jobs.forEach((job,index)=>{
+    if(job.about_job[0].sector == dataEmployeeFilter.sector){
+      let band = false;
+      ids.forEach((id)=>{
+        if(id == index){
+          band = true;
+        }
+      })
+      if(band == false){
+        jobsProb.push(job);
+      }
+    }
+  });
+
+  for(let i=0; i<jobsProb.length;i++){
+    if(scatterplot.length<6){
+      scatterplot.push(jobsProb[i])
+    }
+  }
+
+}
+
+
+
+
+scatterplot.forEach((job) => {
+if (!checkID(job.idUserCompany._id)) {
+
+  job.idUserCompany.logo =
+    job.idUserCompany.logo.buffer.toString("base64");
+}
+});
+
 return scatterplot;
 }
 module.exports = treeCART;
@@ -211,4 +257,20 @@ function numToCategory(categoria){
     return 'La categoría no se encontró en la lista.';
   }
 }
+let idCompanies = [];
+function checkID(_id) {
+  let band = false;
+  idCompanies.forEach((id) => {
+    if (id === _id) {
+      band = true;
+      return;
+    }
+  });
 
+  if (band == true) {
+    return band;
+  }
+  idCompanies.push(_id);
+
+  return false;
+}
