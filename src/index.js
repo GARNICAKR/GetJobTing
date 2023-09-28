@@ -69,33 +69,26 @@ app.use(require('./routes/rabbitMQ'));
 app.use(express.static(path.join(__dirname,'public')));
 //#endregion
 //#region Server is Listenning 
-app.listen(app.get('port'),()=>{
+app.listen(app.get('port'),'0.0.0.0',()=>{
     console.log('Server on port ',app.get('port'));
+    console.log(`Server running at http://0.0.0.0:3000/`);
 });
 //#endregion
 async function pruebaRabbitMq(wait){
     console.log("esta en Index");
     setTimeout(async() => {
-        Consume().then((result)=>{
-            console.log("result",result);
-        })
-    // try {
-    //     Consume().then(()=>{
-            
-    //         setTimeout(() => {
-    //             if(wait<4){
-    //                 console.log("Entro en el wait")
-    //                 pruebaRabbitMq(wait+1);
-    //             }
-                    
-    //           },wait*5000);
-    //     }
-    //     )
+        // Consume().then((result)=>{
+        //     console.log("result",result);
+        // })
+    try {
+        Consume()
         
-    // } catch (error) {
-    //     console.log(error);
-    // }
-        //pruebaRabbitMq();
+        
+    } catch (error) {
+        console.log(error);
+        pruebaRabbitMq(1)
+    }
+        
       }, 5000);
 }
 pruebaRabbitMq(1);

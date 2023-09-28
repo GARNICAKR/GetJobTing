@@ -8,7 +8,10 @@ const { Publish } = require("../helpers/rabbitMQ");
 
 module.exports = {
   index: (req, res) => {
-    res.render("home");
+    let data ={
+      ok:"ok"
+    }
+   res.send(data);
   },
   Fcreate: (req, res) => {
     res.render("users/signup");

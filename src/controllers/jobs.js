@@ -254,6 +254,29 @@ module.exports = {
     );
     res.json(filterjobs);
   },
+  insertManyJobs: async (req, res) => {
+    const jobsporCompany = 5;
+    let contjobs=0;
+    let contidUser=0;
+    async function saveJobs(){
+      for(let i =0;i<jobs.length;i++){
+        jobs[i].idUserCompany=idCompanies[contidUser];
+        jobs[i].vacancies=contidUser+1;
+        const newJob = new Jobs(jobs[i]);
+        await newJob.save();
+        const newAplicant = new Aplicants({ idJobs: newJob._id,titleJobs:newJob.title });
+        await newAplicant.save();
+        contjobs++;
+        if(contjobs==jobsporCompany){
+          contidUser++;
+          contjobs=0;
+        }
+      }
+    } 
+    let idCompanies = [];
+   
+    res.send("termino")
+  },
   pruebaRabbit: async (req, res) => {
     const headers = {
       tabla: "Prueba",

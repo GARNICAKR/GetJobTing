@@ -14,3 +14,29 @@ services:
     build: .
     ports:
       - 4003:3000
+# version: '3'
+# services:
+#   app1:
+#     build: .
+#     networks:
+#       - mynetwork
+#     ports:
+#       - 4001:80
+
+#   app2:
+#     build: .
+#     networks:
+#       - mynetwork
+#     ports:
+#       - 4002:80
+
+#   app3:
+#     build: .
+#     networks:
+#       - mynetwork
+#     ports:
+#       - 4003:80
+
+# networks:
+#   mynetwork:
+#     external: true
