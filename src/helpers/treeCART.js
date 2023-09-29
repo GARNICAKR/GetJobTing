@@ -46,10 +46,16 @@ let dataEmployeeFilter = {
 //   dataEmployeeFilter.intereses = dataEmployeeFilter.intereses.concat(conocimientos)
 // })
 let dataMatch = datajobsFilter.map((job)=>{
-  let matchPC = contarPalabrasIguales(dataEmployeeFilter.palabrasClave,job.palabrasClave) / job.palabrasClave.length;
+  var matchPC;
+  if(job.palabrasClave.length>20){
+   matchPC = contarPalabrasIguales(dataEmployeeFilter.palabrasClave,job.palabrasClave) / job.palabrasClave.length;
+  }else{
+    matchPC = contarPalabrasIguales(dataEmployeeFilter.palabrasClave,job.palabrasClave) / 30;
+  }
   let matchSkills = contarPalabrasIguales(dataEmployeeFilter.skills,job.skills) / job.skills.length;
-  let matchSector = dataEmployeeFilter.sector==job.sector;
-  if(matchPC>0.075 && matchSector){
+  let matchSector = cleanArray([dataEmployeeFilter.sector])==cleanArray([job.sector]);
+  if(matchPC>0.05 && matchSector){
+
     matchPC = matchPC + .25;
   }
   if(matchPC>0.075 && matchSkills>.19){
@@ -159,21 +165,21 @@ let jobsProb = [];
 if(scatterplot.length<6){
   console.log(scatterplot.length)
   jobs.forEach((job,index)=>{
-    if(job.about_job[0].sector == dataEmployeeFilter.sector){
+    if(cleanArray([job.about_job[0].sector])[0]==cleanArray([dataEmployeeFilter.sector])[0]){
       let band = false;
       ids.forEach((id)=>{
         if(id == index){
           band = true;
         }
       })
-      if(band == false){
+      if(band == false){        
         jobsProb.push(job);
       }
     }
   });
 
   for(let i=0; i<jobsProb.length;i++){
-    if(scatterplot.length<6){
+    if(scatterplot.length<8){
       scatterplot.push(jobsProb[i])
     }
   }

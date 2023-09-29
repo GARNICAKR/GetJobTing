@@ -188,7 +188,7 @@ module.exports = {
     res.send("OK");
   },
   showJobs: async (req, res) => {
-   MakeDecision();
+  //  MakeDecision();
     let idCompanies = [];
     function checkID(_id) {
       let band = false;
@@ -317,7 +317,7 @@ module.exports = {
   desicionTree: async(req, res) => {
     const id = req.params.id;
     let jobs = await MakeDecision(id);
-    console.log(jobs)
+    // console.log(jobs)
     res.json(jobs);
   },
 };
