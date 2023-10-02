@@ -71,7 +71,6 @@ app.use(express.static(path.join(__dirname,'public')));
 //#region Server is Listenning 
 app.listen(app.get('port'),'0.0.0.0',()=>{
     console.log('Server on port ',app.get('port'));
-    console.log(`Server running at http://0.0.0.0:3000/`);
 });
 //#endregion
 async function pruebaRabbitMq(wait){
