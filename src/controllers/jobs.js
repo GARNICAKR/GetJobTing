@@ -3,7 +3,7 @@ const userCompany = require("../models/userCompany");
 const Aplicants = require("../models/Aplicants");
 const { emptydatas } = require("../helpers/validations");
 const { Publish } = require("../helpers/rabbitMQ");
-const {MakeDecision}=require("../helpers/treeCART");
+const {MakeDecision,MakeDecisionJob}=require("../helpers/treeCART");
 const mongoose = require('mongoose');
 module.exports = {
   Fcreate: (req, res) => {
@@ -317,7 +317,11 @@ module.exports = {
   desicionTree: async(req, res) => {
     const id = req.params.id;
     let jobs = await MakeDecision(id);
-    // console.log(jobs)
+    res.json(jobs);
+  },
+  desicionTreeJobs: async(req, res) => {
+    const id = req.params.id;
+    let jobs = await MakeDecisionJob(id);
     res.json(jobs);
   },
 };

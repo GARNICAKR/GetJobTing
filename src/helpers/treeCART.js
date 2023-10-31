@@ -1,4 +1,5 @@
 const UserEmployee = require("../models/UsersEmployee");
+const UserCompany = require("../models/userCompany");
 const Jobs = require("../models/Jobs");
 const User = require("../models/Users");
 const dataJobs = require('./data.json');
@@ -19,9 +20,11 @@ let datajobsFilter = jobs.map((job)=>{
   let palabrasReq = cleanArray(eliminarStopWordsEnArreglo([job.about_job[0].requisitos])).concat(description);
   let palabrasSkills = eliminarStopWordsEnArreglo(skillsP).concat(palabrasReq);
   return {
+    id: job._id,
     sector: job.about_job[0].sector,
-    skills:  eliminarStopWordsEnArreglo(skillsP),
-    palabrasClave : cleanArray(eliminarStopWordsEnArreglo([job.about_job[0].responsabilidades])).concat(palabrasSkills)
+    skills:  eliminarPalabrasIguales(eliminarStopWordsEnArreglo(skillsP)),
+    palabrasClave : eliminarPalabrasIguales(cleanArray(eliminarStopWordsEnArreglo([job.about_job[0].responsabilidades])).concat(palabrasSkills)),
+    title: eliminarPalabrasIguales(cleanArray(eliminarStopWordsEnArreglo([job.title])))
   };
 })
 // console.log(datajobsFilter)
@@ -32,36 +35,39 @@ let sector = cleanArray(eliminarStopWordsEnArreglo([employee.sector]))
 let palabrasClave = eliminarStopWordsEnArreglo(skillsEmployee).concat(sector)
 let dataEmployeeFilter = {
   sector: employee.sector,
-  skills: eliminarStopWordsEnArreglo(skillsEmployee),
-  palabrasClave: palabrasClave,
+  skills: eliminarPalabrasIguales(eliminarStopWordsEnArreglo(skillsEmployee)),
+  palabrasClave: eliminarPalabrasIguales(palabrasClave),
   intereses: []
 }
-// console.log(dataEmployeeFilter)
-// console.log(employee.intereses)
-//intereses es un array de objetos que contienen los datos de los empleos pasados
 
-// employee.intereses.forEach((job)=>{
-//   let title = cleanArray(eliminarStopWordsEnArreglo([job.title]))
-//   let conocimientos = cleanArray(eliminarStopWordsEnArreglo([job.conocimientos])).concat(title)
-//   dataEmployeeFilter.intereses = dataEmployeeFilter.intereses.concat(conocimientos)
-// })
+//intereses es un array de objetos que contienen los datos de los empleos pasados
+employee.intereses.forEach((intereses)=>{
+  let title = cleanArray(eliminarStopWordsEnArreglo([intereses.title]))
+  let conocimientos = cleanArray(eliminarStopWordsEnArreglo([intereses.conocimientos])).concat(title)
+  dataEmployeeFilter.intereses = eliminarPalabrasIguales(dataEmployeeFilter.intereses.concat(conocimientos))
+})
+
+// console.log(dataEmployeeFilter.intereses)
 let dataMatch = datajobsFilter.map((job)=>{
   var matchPC;
-  if(job.palabrasClave.length>20){
-   matchPC = contarPalabrasIguales(dataEmployeeFilter.palabrasClave,job.palabrasClave) / job.palabrasClave.length;
-  }else{
-    matchPC = contarPalabrasIguales(dataEmployeeFilter.palabrasClave,job.palabrasClave) / 30;
-  }
+  matchPC = contarPalabrasIguales(dataEmployeeFilter.palabrasClave,job.palabrasClave) / job.palabrasClave.length;
   let matchSkills = contarPalabrasIguales(dataEmployeeFilter.skills,job.skills) / job.skills.length;
-  let matchSector = cleanArray([dataEmployeeFilter.sector])==cleanArray([job.sector]);
-  if(matchPC>0.05 && matchSector){
-
-    matchPC = matchPC + .25;
+  let matchSector = cleanArray([dataEmployeeFilter.sector])[0]===cleanArray([dataEmployeeFilter.sector])[0];
+  let matchTitle = contarPalabrasIguales(dataEmployeeFilter.palabrasClave, job.title) / job.title;
+  if(dataEmployeeFilter.intereses.length>0){
+    var matchIntereses = contarPalabrasIguales(dataEmployeeFilter.intereses, job.palabrasClave) / dataEmployeeFilter.intereses.length;
   }
-  if(matchPC>0.075 && matchSkills>.19){
-    matchPC = matchPC + .25;
+  if(matchPC>0.05 && matchSector && matchTitle>0.2){
+    matchPC = matchPC + .15;
+  }
+  if(matchPC>0.075 && matchSkills>.19 && matchTitle>0.2){
+    matchPC = matchPC + .15;
+  }
+  if(matchPC>0.075 && matchSector && matchIntereses>0.2){
+    matchPC = matchPC + .15;
   }
   return {
+    id: job.id,
     match: matchPC,
     sector: job.sector,
   }
@@ -70,126 +76,25 @@ let dataMatch = datajobsFilter.map((job)=>{
 // const jsonString = JSON.stringify(dataMatch);
 // fs.writeFileSync('archivoComunicacionMedios', jsonString);
 
-let ids = [];
-let scatterplot = jobs.filter((job,index)=>{
-  if(numToCategory(job.about_job[0].sector)>=5){
-    if(numToCategory(job.about_job[0].sector)>7){
-      if(numToCategory(job.about_job[0].sector)==9){//==9
-        if(dataMatch[index].match>.1){
-          ids.push(index);
-          return job
-        }else{
-          return
-        }
-      }else{//==8
-        if(dataMatch[index].match>.1){
-          ids.push(index);
-          return job
-        }else{
-          return
-        }
-      }
-    }else{
-      if(numToCategory(job.about_job[0].sector)==7){//==7
-        if(dataMatch[index].match>.1){
-          ids.push(index);
-          return job
-        }else{
-          return
-        }
-      }else{
-        if(numToCategory(job.about_job[0].sector)==6){//==6
-          if(dataMatch[index].match>.1){
-            ids.push(index);
-            return job
-          }else{
-            return
-          }
-        }else{//5
-          if(dataMatch[index].match>.1){
-            ids.push(index);
-            return job
-          }else{
-            return
-          }
-        }
-      }
+let count = 0;
+let scatterplot = jobs.filter((job)=>{
+  if(job._id == dataMatch[count].id && dataMatch[count].match>.1){
+    job.match = dataMatch[count].match; 
+    count++;
+    return job
     }
-  }else{//menor a 5
-    if(numToCategory(job.about_job[0].sector)<=2){//menor a 2
-      if(numToCategory(job.about_job[0].sector)==0){//==0
-        if(dataMatch[index].match>.1){
-          ids.push(index);
-          return job
-        }else{
-          return
-        }
-      }else{
-        if(numToCategory(job.about_job[0].sector)==1){//==1
-          if(dataMatch[index].match>.1){
-            ids.push(index);
-            return job
-          }else{
-            return
-          }
-        }else{//==2
-          if(dataMatch[index].match>.1){
-            ids.push(index);
-            return job
-          }else{
-            return
-          }
-        }
-      }
-    }else{//mayor a 2
-      if(numToCategory(job.about_job[0].sector)==3){//==3
-        if(dataMatch[index].match>.1){
-          ids.push(index);
-          return job
-        }else{
-          return
-        }
-      }else{//==4
-        if(dataMatch[index].match>.1){
-          ids.push(index);
-          return job
-        }else{
-          return
-        }
-      }
-    }
-  }
+  count++;
 })
-// console.log(scatterplot);
-let jobsProb = [];
-if(scatterplot.length<6){
-  console.log(scatterplot.length)
-  jobs.forEach((job,index)=>{
-    if(cleanArray([job.about_job[0].sector])[0]==cleanArray([dataEmployeeFilter.sector])[0]){
-      let band = false;
-      ids.forEach((id)=>{
-        if(id == index){
-          band = true;
-        }
-      })
-      if(band == false){        
-        jobsProb.push(job);
-      }
-    }
-  });
 
-  for(let i=0; i<jobsProb.length;i++){
-    if(scatterplot.length<8){
-      scatterplot.push(jobsProb[i])
-    }
-  }
-
+if (scatterplot.length > 1) {//algoritmo ordenar elementos
+  var orderJobs = scatterplot.slice(); // Clona el array original para no modificarlo
+  orderJobs.sort((a, b) => b.match - a.match);
+} else {
+  orderJobs = scatterplot;
 }
 
 
-
-
-scatterplot.forEach((job) => {
+orderJobs.forEach((job) => {
 if (!checkID(job.idUserCompany._id)) {
 
   job.idUserCompany.logo =
@@ -197,7 +102,76 @@ if (!checkID(job.idUserCompany._id)) {
 }
 });
 
-return scatterplot;
+return orderJobs; 
+}
+
+treeCART.MakeDecisionJob= async (id)=>{
+  let job = await Jobs.findById(id); 
+  let sector = job.about_job[0].sector;
+  let skills = cleanArray(eliminarStopWordsEnArreglo([job.about_job[0].conocimientos]));
+  let title = cleanArray(eliminarStopWordsEnArreglo([job.title]));
+  const keywords = eliminarPalabrasIguales(skills.concat(title));
+
+  let employees = await UserEmployee.find().lean();
+
+  let dataEmployees = employees.map(employee => {
+    return{
+      id: employee._id ,
+      skills: eliminarPalabrasIguales(eliminarStopWordsEnArreglo(cleanArray(employee.skills))),
+      sector: employee.sector,
+      name: employee.name + ' ' + employee.last_name,
+      intereses: employee.intereses,
+    }
+  });
+  //algoritmo match
+  let dataMatch = dataEmployees.map((employee)=>{
+    var matchPC;
+    matchPC = contarPalabrasIguales(employee.skills, keywords) / keywords.length;
+    let matchSector = cleanArray([sector])[0]===cleanArray([employee.sector])[0];
+    let matchTitle = contarPalabrasIguales(title, employee.skills) / title.length;
+    if(matchSector && matchTitle>.2){
+      if(matchSector && matchTitle<.85){
+        matchPC = matchPC + .15;
+      }
+    }  
+    return {
+      id: employee.id,
+      match: matchPC,
+      sector: employee.sector,
+      name: employee.name,
+      matchTitle: matchTitle
+    }
+  })
+
+  const filteredEmployees = dataMatch.filter(employee => employee.match > 0.2);
+
+  if (filteredEmployees.length > 1) {
+    var orderJobs = filteredEmployees.slice(); // Clona el array original para no modificarlo
+    orderJobs.sort((a, b) => b.match - a.match);
+  } else {
+    orderJobs = filteredEmployees;
+  }
+
+  let employeeComplete = [];
+
+  orderJobs.forEach((employee)=>{
+    employees.forEach((user)=>{
+      if(user._id==employee.id){
+        user.match = employee.match;
+        employeeComplete.push(user);
+      }
+    })
+  })
+
+  const aplicantesConDetalles = employeeComplete.map((empleado) => {
+    empleado.photo = empleado.photo.toString("base64");
+    empleado.CV = empleado.CV.buffer.toString("base64");
+    return {
+      ...empleado
+    };
+  });
+
+  return aplicantesConDetalles
 }
 module.exports = treeCART;
 
@@ -225,7 +199,7 @@ return array;
 
 function eliminarStopWordsEnArreglo(arreglo) {//retona arreglo de palabras individuales sin palabras conectores o inecesarias
   // Lista de palabras basura (stop words)
-  const stopWords = ['al', 'tus','(a', 'a', 'i', 'e' ,'el', 'la','eres','tienes','traves', 'tiene','tienen', 'soy','nuestro','tuyo','mio', 'de', 'los','traves', 'las', 'y', 'en', 'con', 'por', 'para', 'o', 'u', 'del', 'te' ,'si', 'como', 'un'];
+  const stopWords = ['al', 'tus','(a', 'a', 'i', 'e' ,'el', 'la','eres','tienes','traves', 'tiene','tienen', 'soy','nuestro','tuyo','mio', 'de', 'los','traves', 'las', 'y', 'en', 'con', 'por', 'para', 'o', 'u', 'del', 'te' ,'si', 'como', 'un','estar' ];
 
   // Función para eliminar palabras basura de una cadena
   function eliminarStopWordsDeCadena(cadena) {
@@ -279,4 +253,9 @@ function checkID(_id) {
   idCompanies.push(_id);
 
   return false;
+}
+
+function eliminarPalabrasIguales(array){
+  const conjuntoPalabras = new Set(array);
+  return Array.from(conjuntoPalabras);
 }

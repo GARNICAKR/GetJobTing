@@ -1,0 +1,696 @@
+[
+    {
+        "id": "6509db2da9be105479dae54e",
+        "skills": [
+            "diagnostico",
+            "medico",
+            "atencion",
+            "paciente",
+            "gestion",
+            "casos",
+            "clinicos",
+            "cirugia",
+            "menor",
+            "investigacion",
+            "medica"
+        ],
+        "sector": "Salud",
+        "name": "María García Pérez",
+        "intereses": [
+            {
+                "title": "Médico Residente",
+                "sector": "Salud",
+                "conocimientos": "Medicina, Especialidad Médica, Atención al Paciente, Diagnóstico Médico, Investigación Clínica"
+            },
+            {
+                "title": "Nutricionista Clínico",
+                "sector": "Salud",
+                "conocimientos": "Nutrición, Asesoramiento Nutricional, Salud Alimentaria, Dietoterapia, Planificación de Dietas"
+            },
+            {
+                "title": "Psicólogo Clínico",
+                "sector": "Salud",
+                "conocimientos": "Psicología Clínica, Terapia Psicológica, Evaluación de Pacientes, Tratamiento de Trastornos, Psicoterapia"
+            },
+            {
+                "title": "Médico Pediatra",
+                "sector": "Salud",
+                "conocimientos": "Medicina Pediátrica, Atención al Niño, Exámenes de Salud Infantil, Vacunación, Pediatría Preventiva"
+            },
+            {
+                "title": "Enfermero General",
+                "sector": "Salud",
+                "conocimientos": "Enfermería, Cuidado de Pacientes, Administración de Medicamentos, Registros Clínicos, RCP"
+            },
+            {
+                "title": "Médico Residente",
+                "sector": "Salud",
+                "conocimientos": "Medicina, Especialidad Médica, Atención al Paciente, Diagnóstico Médico, Investigación Clínica"
+            },
+            {
+                "title": "Fisioterapeuta",
+                "sector": "Salud",
+                "conocimientos": "Fisioterapia, Rehabilitación, Terapia Física, Evaluación de Pacientes, Ejercicios Terapéuticos"
+            },
+            {
+                "title": "Odontólogo General",
+                "sector": "Salud",
+                "conocimientos": "Odontología, Exámenes Dentales, Procedimientos Dentales, Prevención de Enfermedades Bucales, Radiografías Dentales"
+            },
+            {
+                "title": "Terapeuta Ocupacional",
+                "sector": "Salud",
+                "conocimientos": "Terapia Ocupacional, Evaluación Funcional, Rehabilitación, Adaptación de Entorno, Asistencia Tecnológica"
+            }
+        ]
+    },
+    {
+        "id": "6509dcdcd562aed3044504fb",
+        "skills": [
+            "cuidados",
+            "intensivos",
+            "administracion",
+            "medicamentos",
+            "soporte",
+            "emocional",
+            "pediatricos",
+            "prevencion",
+            "infecciones"
+        ],
+        "sector": "Salud",
+        "name": "Alejandro Torres Rodríguez",
+        "intereses": [
+            {
+                "title": "Nutricionista Clínico",
+                "sector": "Salud",
+                "conocimientos": "Nutrición, Asesoramiento Nutricional, Salud Alimentaria, Dietoterapia, Planificación de Dietas"
+            }
+        ]
+    },
+    {
+        "id": "6509ddded562aed304450507",
+        "skills": [
+            "evaluacion",
+            "nutricional",
+            "planificacion",
+            "dietas",
+            "educacion",
+            "alimentaria",
+            "nutricion",
+            "deportiva",
+            "asesoramiento",
+            "perdida",
+            "peso"
+        ],
+        "sector": "Salud",
+        "name": "Laura Méndez González",
+        "intereses": []
+    },
+    {
+        "id": "6509deecd562aed304450515",
+        "skills": [
+            "analisis",
+            "financiero",
+            "modelado",
+            "economico",
+            "planificacion",
+            "fiscal",
+            "riesgos",
+            "gestion",
+            "presupuesto"
+        ],
+        "sector": "Economia y Finanzas",
+        "name": "Juan López Sánchez",
+        "intereses": []
+    },
+    {
+        "id": "6509e376d562aed304450521",
+        "skills": [
+            "gestion",
+            "inversiones",
+            "analisis",
+            "financiero",
+            "estrategias",
+            "inversion",
+            "planificacion",
+            "financiera",
+            "mercado"
+        ],
+        "sector": "Economia y Finanzas",
+        "name": "Ana  Rodríguez Pérez",
+        "intereses": []
+    },
+    {
+        "id": "6509e42bd562aed30445052c",
+        "skills": [
+            "auditoria",
+            "financiera",
+            "contabilidad",
+            "fiscal",
+            "informes",
+            "financieros",
+            "gestion",
+            "activos",
+            "analisis",
+            "costos"
+        ],
+        "sector": "Economia y Finanzas",
+        "name": "Carlos Gómez Ramírez",
+        "intereses": []
+    },
+    {
+        "id": "650a53ea9461cb0dce895e27",
+        "skills": [
+            "desarrollo",
+            "aplicaciones",
+            "moviles",
+            "ios",
+            "android",
+            "diseno",
+            "interfaces",
+            "usuario",
+            "programacion",
+            "java",
+            "swift",
+            "uxui",
+            "design",
+            "pruebas",
+            "software",
+            "web",
+            "administracion",
+            "bases",
+            "datos",
+            "git",
+            "control",
+            "versiones"
+        ],
+        "sector": "Tecnología e Informatica",
+        "name": "Daniel Martínez Pérez",
+        "intereses": []
+    },
+    {
+        "id": "650a56059461cb0dce895e32",
+        "skills": [
+            "ciberseguridad",
+            "hacking",
+            "etico",
+            "analisis",
+            "vulnerabilidades",
+            "proteccion",
+            "datos",
+            "administracion",
+            "redes",
+            "criptografia",
+            "forense",
+            "digital",
+            "seguridad",
+            "nube"
+        ],
+        "sector": "Tecnología e Informatica",
+        "name": "Sergio Rodríguez Martínez",
+        "intereses": [
+            {
+                "title": "Analista de Datos en Prácticas",
+                "sector": "Tecnologia e Informatica",
+                "conocimientos": "Análisis de datos, Bases de datos, SQL, Herramientas de BI, Estadísticas"
+            }
+        ]
+    },
+    {
+        "id": "650a577b9461cb0dce895e3d",
+        "skills": [
+            "desarrollo",
+            "web",
+            "gestion",
+            "proyectos",
+            "agiles",
+            "bases",
+            "datos",
+            "sql",
+            "nosql",
+            "programacion",
+            "python",
+            "javascript",
+            "analisis",
+            "devops",
+            "automatizacion",
+            "seguridad",
+            "informatica",
+            "diseno",
+            "algoritmos"
+        ],
+        "sector": "Tecnología e Informatica",
+        "name": "Laura Garcia Ramirez",
+        "intereses": []
+    },
+    {
+        "id": "650a665a31423d0269d7fc84",
+        "skills": [
+            "diseno",
+            "curriculo",
+            "ensenanza",
+            "inclusiva",
+            "evaluacion",
+            "educativa",
+            "desarrollo",
+            "materiales",
+            "didacticos",
+            "formacion",
+            "docentes"
+        ],
+        "sector": "Educacion",
+        "name": "Ana Lopez Castillo",
+        "intereses": []
+    },
+    {
+        "id": "650a679231423d0269d7fc91",
+        "skills": [
+            "evaluacion",
+            "psicopedagogica",
+            "orientacion",
+            "educativa",
+            "terapia",
+            "individual",
+            "adaptacion",
+            "curricular",
+            "atencion",
+            "diversidad"
+        ],
+        "sector": "Educacion",
+        "name": "Juan López Sánchez",
+        "intereses": []
+    },
+    {
+        "id": "650a6a0600db2a9b9bccf935",
+        "skills": [
+            "ensenanza",
+            "literatura",
+            "fomento",
+            "lectura",
+            "analisis",
+            "literario",
+            "creacion",
+            "clubes",
+            "talleres",
+            "escritura"
+        ],
+        "sector": "Educacion",
+        "name": "Liz  Montes Real",
+        "intereses": []
+    },
+    {
+        "id": "650a6b7300db2a9b9bccf940",
+        "skills": [
+            "diseno",
+            "cadcam",
+            "analisis",
+            "resistencia",
+            "materiales",
+            "manufactura",
+            "automatizada",
+            "gestion",
+            "proyectos",
+            "ingenieria",
+            "optimizacion",
+            "procesos",
+            "control",
+            "calidad",
+            "investigacion",
+            "desarrollo",
+            "productos",
+            "simulacion",
+            "sistemas"
+        ],
+        "sector": "Ingenieria",
+        "name": "Luis  Rodríguez Martínez",
+        "intereses": []
+    },
+    {
+        "id": "650a6c2200db2a9b9bccf94b",
+        "skills": [
+            "diseno",
+            "sistemas",
+            "energia",
+            "solar",
+            "control",
+            "electricos",
+            "automatizacion",
+            "industrial",
+            "eolica",
+            "gestion",
+            "proyectos",
+            "renovable",
+            "eficiencia",
+            "energetica",
+            "analisis",
+            "redes",
+            "electricas",
+            "distribucion"
+        ],
+        "sector": "Ingenieria",
+        "name": "Lupe Muñoz Ramos",
+        "intereses": []
+    },
+    {
+        "id": "650a6d1900db2a9b9bccf956",
+        "skills": [
+            "diseno",
+            "carreteras",
+            "puentes",
+            "gestion",
+            "proyectos",
+            "construccion",
+            "analisis",
+            "estructural",
+            "topografia",
+            "geodesia",
+            "recursos",
+            "hidricos",
+            "ingenieria",
+            "trafico",
+            "evaluacion",
+            "impacto",
+            "ambiental",
+            "planificacion",
+            "urbana"
+        ],
+        "sector": "Ingenieria",
+        "name": "Jesus Diaz Perez",
+        "intereses": []
+    },
+    {
+        "id": "650b41051eb6abdbb8c28c8d",
+        "skills": [
+            "pintura",
+            "oleo",
+            "escultura",
+            "bronce",
+            "grabado",
+            "litografia",
+            "arte",
+            "contemporaneo",
+            "curaduria",
+            "exposiciones",
+            "ensenanza",
+            "artes",
+            "visuales",
+            "diseno",
+            "grafico",
+            "fotografia",
+            "artistica"
+        ],
+        "sector": "Arte y Cultura",
+        "name": "Maria  Hernandez Lopez",
+        "intereses": []
+    },
+    {
+        "id": "650b427b6e5b3e68fdfe1b53",
+        "skills": [
+            "composicion",
+            "musical",
+            "interpretacion",
+            "piano",
+            "violin",
+            "direccion",
+            "orquesta",
+            "educacion",
+            "produccion",
+            "arreglos",
+            "musicales",
+            "musicologia",
+            "grabacion",
+            "estudio"
+        ],
+        "sector": "Arte y Cultura",
+        "name": "Daniel Raigoza Sosa",
+        "intereses": []
+    },
+    {
+        "id": "650b434a6e5b3e68fdfe1b5f",
+        "skills": [
+            "investigacion",
+            "historia",
+            "arte",
+            "conservacion",
+            "restauracion",
+            "obras",
+            "curaduria",
+            "museos",
+            "arquitectura",
+            "critica",
+            "educacion",
+            "artistica",
+            "catalogacion",
+            "colecciones",
+            "gestion",
+            "cultural"
+        ],
+        "sector": "Arte y Cultura",
+        "name": "Flor Diaz Ramos",
+        "intereses": []
+    },
+    {
+        "id": "650b6287764cac1cfdeff473",
+        "skills": [
+            "atencion",
+            "cliente",
+            "resolucion",
+            "conflictos",
+            "gestion",
+            "quejas",
+            "comunicacion",
+            "efectiva",
+            "empatia"
+        ],
+        "sector": "Servicios al Cliente",
+        "name": "Vania Ordaz Manzo",
+        "intereses": []
+    },
+    {
+        "id": "650b68fd53ffb8d924c69359",
+        "skills": [
+            "estrategias",
+            "atencion",
+            "cliente",
+            "analisis",
+            "satisfaccion",
+            "gestion",
+            "redes",
+            "sociales",
+            "investigacion",
+            "mercado",
+            "marketing",
+            "digital"
+        ],
+        "sector": "Servicios al Cliente",
+        "name": "Luis Gomez Lopez",
+        "intereses": []
+    },
+    {
+        "id": "650b699653ffb8d924c69364",
+        "skills": [
+            "relaciones",
+            "publicas",
+            "servicio",
+            "cliente",
+            "gestion",
+            "eventos",
+            "redaccion",
+            "negociacion"
+        ],
+        "sector": "Servicios al Cliente",
+        "name": "Andrea Ruiz Ramos",
+        "intereses": []
+    },
+    {
+        "id": "650b72f17534aa17591a0a71",
+        "skills": [
+            "diseno",
+            "arquitectonico",
+            "planificacion",
+            "proyectos",
+            "construccion",
+            "gestion",
+            "obra",
+            "dibujo",
+            "tecnico",
+            "modelado",
+            "3d"
+        ],
+        "sector": "Construccion y Oficios",
+        "name": "Carlos Gomez Farias",
+        "intereses": []
+    },
+    {
+        "id": "650b74517534aa17591a0a7d",
+        "skills": [
+            "diseno",
+            "carreteras",
+            "puentes",
+            "gestion",
+            "proyectos",
+            "construccion",
+            "topografia",
+            "evaluacion",
+            "impacto",
+            "ambiental",
+            "seguridad"
+        ],
+        "sector": "Construccion y Oficios",
+        "name": "Dayra Lopez Capistran",
+        "intereses": []
+    },
+    {
+        "id": "650b751b7534aa17591a0a89",
+        "skills": [
+            "instalaciones",
+            "electricas",
+            "mantenimiento",
+            "preventivo",
+            "diagnostico",
+            "fallas",
+            "control",
+            "calidad",
+            "normativas"
+        ],
+        "sector": "Construccion y Oficios",
+        "name": "Juan  López Sánchez",
+        "intereses": []
+    },
+    {
+        "id": "650b78057534aa17591a0a94",
+        "skills": [
+            "investigacion",
+            "campo",
+            "ecologia",
+            "conservacion",
+            "especies",
+            "analisis",
+            "datos",
+            "biologicos",
+            "educacion",
+            "ambiental"
+        ],
+        "sector": "Ciencias Naturales",
+        "name": "Daniel Diaz Perez",
+        "intereses": []
+    },
+    {
+        "id": "650b79527534aa17591a0aa1",
+        "skills": [
+            "sintesis",
+            "quimica",
+            "espectroscopia",
+            "analisis",
+            "laboratorio",
+            "investigacion",
+            "organica",
+            "seguridad"
+        ],
+        "sector": "Ciencias Naturales",
+        "name": "Rita Rico Lopez",
+        "intereses": []
+    },
+    {
+        "id": "650b7a2d7534aa17591a0aae",
+        "skills": [
+            "exploracion",
+            "geologica",
+            "mapeo",
+            "geologico",
+            "geologia",
+            "ambiental",
+            "geofisica",
+            "interpretacion",
+            "datos",
+            "geologicos"
+        ],
+        "sector": "Ciencias Naturales",
+        "name": "Diana Barajas Barajas",
+        "intereses": []
+    },
+    {
+        "id": "650b808e2ee9d7141d2bb47f",
+        "skills": [
+            "relaciones",
+            "publicas",
+            "gestion",
+            "medios",
+            "digitales",
+            "redaccion",
+            "creativa",
+            "estrategias",
+            "comunicacion",
+            "produccion",
+            "contenidos",
+            "multimedia"
+        ],
+        "sector": "Comunicacion y Medios",
+        "name": "Sofia Chavez Lopez",
+        "intereses": []
+    },
+    {
+        "id": "650b846bfd143bd995f31649",
+        "skills": [
+            "investigacion",
+            "periodistica",
+            "periodismo",
+            "datos",
+            "edicion",
+            "noticias",
+            "entrevistas",
+            "narrativa",
+            "multimedia"
+        ],
+        "sector": "Comunicacion y Medios",
+        "name": "Pedro Perez Lopez",
+        "intereses": []
+    },
+    {
+        "id": "650b856b2ee9d7141d2bb491",
+        "skills": [
+            "produccion",
+            "audiovisual",
+            "edicion",
+            "video",
+            "direccion",
+            "fotografia",
+            "guionizacion",
+            "postproduccion",
+            "diseno",
+            "grafico"
+        ],
+        "sector": "Comunicacion y Medios",
+        "name": "Maira Guitierrez Guerra",
+        "intereses": []
+    },
+    {
+        "id": "6530be2f0823b8d38c802f43",
+        "skills": [
+            "js",
+            "vue3",
+            "quasar"
+        ],
+        "sector": "Tecnología e Informatica",
+        "name": "Jesus Isaias Garnica Ramos",
+        "intereses": [
+            {
+                "title": "Editor de Revistas",
+                "sector": "Comunicacion y Medios",
+                "conocimientos": "Edición de Revistas, Diseño Editorial, Redacción Creativa, Maquetación, Publicaciones Impresas"
+            },
+            {
+                "title": "1",
+                "sector": "Arte y Cultura",
+                "conocimientos": "1"
+            }
+        ]
+    },
+    {
+        "id": "653156c6811e749890b3471e",
+        "skills": [],
+        "sector": "Tecnología e Informatica",
+        "name": "Jesus Garnica",
+        "intereses": []
+    }
+]
