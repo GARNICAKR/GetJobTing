@@ -317,7 +317,14 @@ module.exports = {
   desicionTree: async(req, res) => {
     const id = req.params.id;
     let jobs = await MakeDecision(id);
-    res.json(jobs);
+    if (jobs.length==0){
+      let data={
+        error:"No hay recomendaciones"
+      }
+      res.send(data);
+    } else{
+      res.json(jobs);
+    }
   },
   desicionTreeJobs: async(req, res) => {
     const id = req.params.id;
