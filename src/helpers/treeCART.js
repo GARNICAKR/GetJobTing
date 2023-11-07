@@ -50,7 +50,7 @@ employee.intereses.forEach((intereses)=>{
 // console.log(dataEmployeeFilter.intereses)
 let dataMatch = datajobsFilter.map((job)=>{
   var matchPC;
-  matchPC = contarPalabrasIguales(dataEmployeeFilter.palabrasClave,job.palabrasClave) / job.palabrasClave.length;
+  matchPC = contarPalabrasIguales(dataEmployeeFilter.palabrasClave,job.palabrasClave) / (job.palabrasClave.length-1);
   let matchSkills = contarPalabrasIguales(dataEmployeeFilter.skills,job.skills) / job.skills.length;
   let matchSector = cleanArray([dataEmployeeFilter.sector])[0]===cleanArray([dataEmployeeFilter.sector])[0];
   let matchTitle = contarPalabrasIguales(dataEmployeeFilter.palabrasClave, job.title) / job.title;
@@ -126,14 +126,15 @@ treeCART.MakeDecisionJob= async (id)=>{
   //algoritmo match
   let dataMatch = dataEmployees.map((employee)=>{
     var matchPC;
-    matchPC = contarPalabrasIguales(employee.skills, keywords) / keywords.length;
+    matchPC = contarPalabrasIguales(employee.skills, keywords) / (keywords.length-1);
     let matchSector = cleanArray([sector])[0]===cleanArray([employee.sector])[0];
     let matchTitle = contarPalabrasIguales(title, employee.skills) / title.length;
-    if(matchSector && matchTitle>.2){
-      if(matchTitle<.8){
-        matchPC = matchPC + .17345678;
+    if(matchSector && matchPC>.2){
+      console.log(1)
+      if(matchPC<.7){
+        matchPC = matchPC + .17;
       }
-    }  
+    }   
     return {
       id: employee.id,
       match: matchPC,
