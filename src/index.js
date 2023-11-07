@@ -7,6 +7,7 @@ const passport =require('passport');
 const flash=require('connect-flash');
 const cors=require('cors');
 const { Consume } = require("./helpers/rabbitMQ");
+require('dotenv').config()
 //Paquetes a Instalar
 // npm i express express-handlebars express-session method-override moongose nodemon bcryptjs passport passport-local connect-flash
 //#region Initializations

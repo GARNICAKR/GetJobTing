@@ -37,7 +37,7 @@
     "@babel/core": "^7.20.12",
     "@babel/node": "^7.20.7",
     "@babel/preset-env": "^7.20.2",
-    "dotenv": "^16.0.3"
+    "dotenv": "^16.3.1"
   },
   "engines": {
     "node": "20.9.0"
