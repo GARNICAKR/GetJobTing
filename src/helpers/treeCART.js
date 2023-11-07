@@ -130,8 +130,8 @@ treeCART.MakeDecisionJob= async (id)=>{
     let matchSector = cleanArray([sector])[0]===cleanArray([employee.sector])[0];
     let matchTitle = contarPalabrasIguales(title, employee.skills) / title.length;
     if(matchSector && matchTitle>.2){
-      if(matchSector && matchTitle<.85){
-        matchPC = matchPC + .15;
+      if(matchTitle<.8){
+        matchPC = matchPC + .17345678;
       }
     }  
     return {
